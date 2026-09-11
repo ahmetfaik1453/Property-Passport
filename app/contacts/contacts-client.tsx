@@ -1,9 +1,21 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { 
   Users, 
-  Plus
+  Plus,
+  Building2,
+  Phone,
+  Mail,
+  Calendar,
+  FileText,
+  Camera,
+  ArrowUpRight,
+  ShieldCheck,
+  X,
+  MapPin,
+  ExternalLink
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
@@ -15,6 +27,7 @@ import { formatPhoneNumber, isValidPhoneNumber, isValidEmail, isValidName } from
 export default function ContactsPageClient() {
   const [activeTab, setActiveTab] = useState<'TENANTS' | 'LANDLORDS'>('TENANTS')
   const [showAddModal, setShowAddModal] = useState(false)
+  const [selectedContact, setSelectedContact] = useState<any>(null)
 
   // Yeni kişi state
   const [name, setName] = useState('')
@@ -243,7 +256,11 @@ export default function ContactsPageClient() {
       <div className="sm:hidden flex flex-col gap-3">
         {activeTab === 'TENANTS' ? (
           tenants.map((t) => (
-            <div key={t.id} className="p-4 rounded-xl border border-[#dddddd] bg-white space-y-2.5 shadow-2xs">
+            <div 
+              key={t.id} 
+              onClick={() => setSelectedContact({ ...t, contactType: 'TENANT' })}
+              className="p-4 rounded-xl border border-[#dddddd] bg-white space-y-2.5 shadow-2xs cursor-pointer hover:border-[#222222] transition-colors"
+            >
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <span className="font-bold text-sm text-[#222222] block">{t.name}</span>
@@ -263,11 +280,18 @@ export default function ContactsPageClient() {
                   <span className="text-[#222222]">{t.email}</span>
                 </div>
               </div>
+              <div className="pt-2 flex items-center justify-end text-xs font-semibold text-[#ff385c]">
+                Detayları İncele →
+              </div>
             </div>
           ))
         ) : (
           landlords.map((l) => (
-            <div key={l.id} className="p-4 rounded-xl border border-[#dddddd] bg-white space-y-2.5 shadow-2xs">
+            <div 
+              key={l.id} 
+              onClick={() => setSelectedContact({ ...l, contactType: 'LANDLORD' })}
+              className="p-4 rounded-xl border border-[#dddddd] bg-white space-y-2.5 shadow-2xs cursor-pointer hover:border-[#222222] transition-colors"
+            >
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <span className="font-bold text-sm text-[#222222] block">{l.name}</span>
@@ -287,6 +311,9 @@ export default function ContactsPageClient() {
                   <span className="text-[#222222]">{l.email}</span>
                 </div>
               </div>
+              <div className="pt-2 flex items-center justify-end text-xs font-semibold text-[#ff385c]">
+                Detayları İncele →
+              </div>
             </div>
           ))
         )}
@@ -302,12 +329,17 @@ export default function ContactsPageClient() {
               <TableHead className="text-[12px] font-semibold text-[#222222]">E-posta</TableHead>
               <TableHead className="text-[12px] font-semibold text-[#222222]">İlişkili Taşınmaz</TableHead>
               <TableHead className="text-[12px] font-semibold text-[#222222]">{activeTab === 'TENANTS' ? 'Durum' : 'Portföy Miktarı'}</TableHead>
+              <TableHead className="text-[12px] font-semibold text-[#222222] text-right">İşlem</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {activeTab === 'TENANTS' ? (
               tenants.map((t) => (
-                <TableRow key={t.id} className="border-b border-[#ebebeb] hover:bg-[#f7f7f7]/60 transition-colors">
+                <TableRow 
+                  key={t.id} 
+                  onClick={() => setSelectedContact({ ...t, contactType: 'TENANT' })}
+                  className="border-b border-[#ebebeb] hover:bg-[#f7f7f7]/80 transition-colors cursor-pointer"
+                >
                   <TableCell className="font-semibold text-[13px] text-[#222222]">{t.name}</TableCell>
                   <TableCell className="text-[13px] font-mono text-[#717171]">{t.phone}</TableCell>
                   <TableCell className="text-[13px] text-[#717171]">{t.email}</TableCell>
@@ -317,11 +349,28 @@ export default function ContactsPageClient() {
                       {t.status}
                     </Badge>
                   </TableCell>
+                  <TableCell className="text-right">
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedContact({ ...t, contactType: 'TENANT' })
+                      }}
+                      className="h-8 px-2.5 text-xs font-semibold text-[#ff385c] hover:bg-[#fff8f6] rounded-lg"
+                    >
+                      Profili Gör
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               landlords.map((l) => (
-                <TableRow key={l.id} className="border-b border-[#ebebeb] hover:bg-[#f7f7f7]/60 transition-colors">
+                <TableRow 
+                  key={l.id} 
+                  onClick={() => setSelectedContact({ ...l, contactType: 'LANDLORD' })}
+                  className="border-b border-[#ebebeb] hover:bg-[#f7f7f7]/80 transition-colors cursor-pointer"
+                >
                   <TableCell className="font-semibold text-[13px] text-[#222222]">{l.name}</TableCell>
                   <TableCell className="text-[13px] font-mono text-[#717171]">{l.phone}</TableCell>
                   <TableCell className="text-[13px] text-[#717171]">{l.email}</TableCell>
@@ -331,12 +380,160 @@ export default function ContactsPageClient() {
                       {l.totalProperties} Mülk
                     </Badge>
                   </TableCell>
+                  <TableCell className="text-right">
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedContact({ ...l, contactType: 'LANDLORD' })
+                      }}
+                      className="h-8 px-2.5 text-xs font-semibold text-[#ff385c] hover:bg-[#fff8f6] rounded-lg"
+                    >
+                      Mülkleri Gör
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))
             )}
           </TableBody>
         </Table>
       </Card>
+
+      {/* Kişi / Profil Detay Modalı (Slide-over / Modal) */}
+      {selectedContact && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={() => setSelectedContact(null)}
+        >
+          <div 
+            className="bg-white rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto border border-[#dddddd] shadow-2xl animate-in zoom-in-95 duration-150 p-6 space-y-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-start justify-between border-b border-[#ebebeb] pb-4">
+              <div className="flex items-center gap-3">
+                <div className="size-12 rounded-xl bg-[#ff385c]/10 text-[#ff385c] flex items-center justify-center font-bold text-lg">
+                  {selectedContact.name?.slice(0, 2).toUpperCase()}
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-[#222222]">{selectedContact.name}</h3>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <Badge variant="secondary" className="text-[11px] font-semibold bg-[#f7f7f7] text-[#222222] border border-[#dddddd]">
+                      {selectedContact.contactType === 'TENANT' ? 'Kiracı Profili' : 'Mülk Sahibi Profili'}
+                    </Badge>
+                    <span className="text-xs text-[#717171]">ID: {selectedContact.id}</span>
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSelectedContact(null)}
+                className="size-8 rounded-lg hover:bg-[#f7f7f7] text-[#717171] hover:text-[#222222] flex items-center justify-center transition-colors"
+              >
+                <X className="size-5" />
+              </button>
+            </div>
+
+            {/* İletişim Kartları */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="p-3 rounded-xl border border-[#dddddd] bg-[#fafafa] flex items-center gap-3">
+                <Phone className="size-4 text-[#717171]" />
+                <div>
+                  <span className="text-[11px] text-[#717171] block">Telefon Numarası</span>
+                  <a href={`tel:${selectedContact.phone}`} className="text-[13px] font-semibold text-[#222222] font-mono hover:underline">
+                    {selectedContact.phone}
+                  </a>
+                </div>
+              </div>
+              <div className="p-3 rounded-xl border border-[#dddddd] bg-[#fafafa] flex items-center gap-3">
+                <Mail className="size-4 text-[#717171]" />
+                <div>
+                  <span className="text-[11px] text-[#717171] block">E-posta Adresi</span>
+                  <a href={`mailto:${selectedContact.email}`} className="text-[13px] font-semibold text-[#222222] hover:underline truncate block max-w-[180px]">
+                    {selectedContact.email}
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* İlişkili Taşınmazlar & Teslimat Bilgisi */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="font-bold text-sm text-[#222222] flex items-center gap-1.5">
+                  <Building2 className="size-4 text-[#ff385c]" />
+                  {selectedContact.contactType === 'TENANT' ? 'Kiralanan Taşınmaz' : 'Kayıtlı Mülk Portföyü'}
+                </h4>
+                <span className="text-xs text-[#717171]">
+                  {selectedContact.contactType === 'TENANT' ? '1 Taşınmaz' : `${selectedContact.totalProperties || 1} Taşınmaz`}
+                </span>
+              </div>
+
+              <div className="p-4 rounded-xl border border-[#dddddd] bg-white space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h5 className="font-bold text-sm text-[#222222]">{selectedContact.property}</h5>
+                    <p className="text-xs text-[#717171] mt-0.5 flex items-center gap-1">
+                      <MapPin className="size-3 text-[#ff385c]" /> İstanbul
+                    </p>
+                  </div>
+                  <Link href="/properties/prop-1">
+                    <Button size="sm" variant="outline" className="h-7 text-xs font-semibold rounded-lg border-[#dddddd] text-[#222222]">
+                      Mülke Git <ArrowUpRight className="size-3 ml-1" />
+                    </Button>
+                  </Link>
+                </div>
+
+                <div className="border-t border-[#ebebeb] pt-3 flex items-center justify-between text-xs">
+                  <span className="text-[#717171]">Son Teslimat Durumu:</span>
+                  <span className="font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+                    Tamamlandı & Onaylandı (11 Eylül 2026)
+                  </span>
+                </div>
+              </div>
+
+              {selectedContact.contactType === 'LANDLORD' && (selectedContact.totalProperties || 1) > 1 && (
+                <div className="p-4 rounded-xl border border-[#dddddd] bg-white space-y-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h5 className="font-bold text-sm text-[#222222]">Batışehir Premium Rezidans D:110</h5>
+                      <p className="text-xs text-[#717171] mt-0.5 flex items-center gap-1">
+                        <MapPin className="size-3 text-[#ff385c]" /> Bağcılar, İstanbul
+                      </p>
+                    </div>
+                    <Link href="/properties/prop-3">
+                      <Button size="sm" variant="outline" className="h-7 text-xs font-semibold rounded-lg border-[#dddddd] text-[#222222]">
+                        Mülke Git <ArrowUpRight className="size-3 ml-1" />
+                      </Button>
+                    </Link>
+                  </div>
+                  <div className="border-t border-[#ebebeb] pt-3 flex items-center justify-between text-xs">
+                    <span className="text-[#717171]">Kiracı:</span>
+                    <span className="font-medium text-[#222222]">Selin Kaya</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Hızlı İşlemler */}
+            <div className="pt-2 border-t border-[#ebebeb] flex items-center justify-end gap-2.5">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setSelectedContact(null)}
+                className="h-9 px-4 text-xs font-semibold rounded-lg border-[#dddddd]"
+              >
+                Kapat
+              </Button>
+              <Link href="/handovers/new?id=ho-101">
+                <Button size="sm" className="h-9 px-4 bg-[#ff385c] hover:bg-[#e00b41] text-white text-xs font-semibold rounded-lg">
+                  <FileText className="size-3.5 mr-1.5" /> Teslim Tutanaklarını İncele
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
+

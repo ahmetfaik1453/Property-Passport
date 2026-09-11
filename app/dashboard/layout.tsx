@@ -53,11 +53,13 @@ export default function DashboardLayout({
     router.refresh()
   }
 
+  const role = user?.user_metadata?.role || (user ? 'AGENT' : 'GUEST')
+
   const navLinks = [
-    { href: '/dashboard', label: 'Kontrol Paneli', icon: Home },
-    { href: '/properties', label: 'Mülk Portföyü', icon: Building2 },
-    { href: '/handovers', label: 'Teslim Tutanakları', icon: FileText },
-    { href: '/contacts', label: 'Ev Sahibi & Kiracılar', icon: UserCheck },
+    { href: '/dashboard', label: role === 'TENANT' ? 'Evim & Teslimat' : 'Kontrol Paneli', icon: Home },
+    ...(role !== 'TENANT' ? [{ href: '/properties', label: role === 'LANDLORD' ? 'Mülklerim' : 'Mülk Portföyü', icon: Building2 }] : []),
+    { href: '/handovers', label: role === 'TENANT' ? 'Teslim Tutanaklarım' : 'Teslim Tutanakları', icon: FileText },
+    ...(role === 'AGENT' ? [{ href: '/contacts', label: 'Ev Sahibi & Kiracılar', icon: UserCheck }] : []),
   ]
 
   return (

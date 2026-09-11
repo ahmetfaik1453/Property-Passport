@@ -16,21 +16,37 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { createClient } from '@/utils/supabase/client'
 
 export default function HandoversPageClient() {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('ALL')
-
   const [user, setUser] = useState<any>(null)
+  const supabase = createClient()
 
-  const handoversList = [
+  React.useEffect(() => {
+    async function checkAuth() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        setUser(user)
+      } catch {
+        setUser(null)
+      }
+    }
+    checkAuth()
+  }, [])
+
+  const role = user?.user_metadata?.role || (user ? 'AGENT' : 'GUEST')
+  const fullName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || ''
+
+  const allHandovers = [
     {
       id: 'ho-101',
       title: 'Nidapark Küçükyalı A Blok D:14',
       district: 'Maltepe, İstanbul',
       type: 'Giriş (Move-in)',
-      tenant: 'Ahmet Yılmaz',
-      landlord: 'Ali Kaya',
+      tenant: role === 'TENANT' && fullName ? fullName : 'Ahmet Yılmaz',
+      landlord: role === 'LANDLORD' && fullName ? fullName : 'Ali Kaya',
       photos: 18,
       status: 'COMPLETED',
       statusText: 'Tamamlandı & Doğrulandı',
@@ -96,6 +112,13 @@ export default function HandoversPageClient() {
     }
   ]
 
+  // Role-based list
+  const handoversList = role === 'TENANT' 
+    ? allHandovers.slice(0, 1) 
+    : role === 'LANDLORD'
+      ? allHandovers.slice(0, 2)
+      : allHandovers
+
   const filtered = handoversList.filter((item) => {
     const matchesSearch = 
       item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -112,21 +135,28 @@ export default function HandoversPageClient() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#dddddd]">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-[22px] font-bold tracking-tight text-[#222222]">Teslim Tutanakları</h1>
+            <h1 className="text-[22px] font-bold tracking-tight text-[#222222]">
+              {role === 'TENANT' ? 'Teslim Tutanağım' : role === 'LANDLORD' ? 'Mülk Teslimat Kayıtları' : 'Teslim Tutanakları'}
+            </h1>
             <Badge variant="secondary" className="text-[11px] font-semibold bg-[#f7f7f7] text-[#222222] border border-[#dddddd] rounded-full px-2.5 py-0.5">
               {handoversList.length} Tutanak
             </Badge>
           </div>
           <p className="text-[14px] text-[#717171] mt-1">
-            Giriş ve çıkış teslimatları, sayaç kayıtları, oda fotoğrafları ve doğrulanabilir dijital belgeler
+            {role === 'TENANT' 
+              ? 'Kiracısı olduğunuz konutun resmi teslim belgesi, sayaç endeksleri ve oda fotoğrafları'
+              : 'Giriş ve çıkış teslimatları, sayaç kayıtları, oda fotoğrafları ve doğrulanabilir dijital belgeler'
+            }
           </p>
         </div>
 
-        <Link href="/handovers/new">
-          <Button size="sm" className="bg-[#ff385c] hover:bg-[#e00b41] text-white gap-2 h-9 text-[14px] font-medium px-4 rounded-lg shadow-sm">
-            <Plus className="size-3.5" /> Yeni Teslim Başlat
-          </Button>
-        </Link>
+        {role === 'AGENT' && (
+          <Link href="/handovers/new">
+            <Button size="sm" className="bg-[#ff385c] hover:bg-[#e00b41] text-white gap-2 h-9 text-[14px] font-medium px-4 rounded-lg shadow-sm">
+              <Plus className="size-3.5" /> Yeni Teslim Başlat
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Filter and Search Bar */}

@@ -137,7 +137,14 @@ export default function PropertiesPageClient() {
     },
   ]
 
-  const filtered = sampleProperties.filter((p) => {
+  const role = user?.user_metadata?.role || (user ? 'AGENT' : 'GUEST')
+  const fullName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || ''
+
+  const propertiesList = role === 'LANDLORD' 
+    ? sampleProperties.slice(0, 2) 
+    : sampleProperties
+
+  const filtered = propertiesList.filter((p) => {
     const matchesSearch = 
       p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.district.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -169,7 +176,7 @@ export default function PropertiesPageClient() {
             </Link>
             <Link href="/register">
               <button className="h-8 px-3.5 text-xs font-semibold border border-[#dddddd] hover:bg-white text-[#222222] rounded-lg transition-colors">
-                Kayıt Ol
+                Hesap Oluştur
               </button>
             </Link>
           </div>
@@ -181,10 +188,10 @@ export default function PropertiesPageClient() {
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-[24px] font-bold text-[#222222] tracking-tight">
-              {user ? 'Mülk Portföyü' : 'Örnek Mülk Portföyü'}
+              {role === 'LANDLORD' ? 'Mülklerim' : user ? 'Mülk Portföyü' : 'Örnek Mülk Portföyü'}
             </h1>
             <span className="text-xs bg-[#f7f7f7] text-[#6a6a6a] px-2.5 py-0.5 rounded-full font-semibold border border-[#ebebeb]">
-              {sampleProperties.length} Taşınmaz
+              {propertiesList.length} Taşınmaz
             </span>
             {!user && (
               <span className="text-[11px] bg-[#fff8f6] text-[#c13515] px-2.5 py-0.5 rounded-full font-semibold border border-[#ffd1da]">
@@ -193,17 +200,21 @@ export default function PropertiesPageClient() {
             )}
           </div>
           <p className="text-xs text-[#6a6a6a] mt-1">
-            {user 
-              ? 'Ajansınıza kayıtlı taşınmazlar, oda dökümleri, kiracı geçmişi ve kanıt tutanakları' 
-              : 'Doğrulanabilir dijital kanıt modeliyle kayıt altına alınmış örnek taşınmazlar ve teslimat geçmişi'}
+            {role === 'LANDLORD' 
+              ? 'Mülkiyetinizdeki taşınmazlar, güncel kiracılar ve onaylı teslimat durumları'
+              : user 
+                ? 'Ajansınıza kayıtlı taşınmazlar, oda dökümleri, kiracı geçmişi ve kanıt tutanakları' 
+                : 'Doğrulanabilir dijital kanıt modeliyle kayıt altına alınmış örnek taşınmazlar ve teslimat geçmişi'}
           </p>
         </div>
 
-        <Link href="/properties/new">
-          <button className="bg-[#ff385c] hover:bg-[#e00b41] text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-xs flex items-center gap-1.5">
-            <Plus className="size-3.5" /> Yeni Mülk Ekle
-          </button>
-        </Link>
+        {role !== 'TENANT' && (
+          <Link href="/properties/new">
+            <button className="bg-[#ff385c] hover:bg-[#e00b41] text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-xs flex items-center gap-1.5">
+              <Plus className="size-3.5" /> Yeni Mülk Ekle
+            </button>
+          </Link>
+        )}
       </div>
 
       {/* Filter and Search Bar (Airbnb pill aesthetic) */}
