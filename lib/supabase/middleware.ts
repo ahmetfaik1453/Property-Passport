@@ -6,54 +6,63 @@ export async function updateSession(request: NextRequest) {
     request,
   })
 
-  // Eğer Supabase URL henüz ayarlanmamışsa oturum kontrolünü baypas et
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder')) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+
+  // Eğer Supabase anahtarları henüz set edilmemişse hata vermeden isteği geçir
+  if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('placeholder')) {
     return supabaseResponse
   }
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
+  try {
+    const supabase = createServerClient(
+      supabaseUrl,
+      supabaseKey,
+      {
+        cookies: {
+          getAll() {
+            return request.cookies.getAll()
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+            supabaseResponse = NextResponse.next({
+              request,
+            })
+            cookiesToSet.forEach(({ name, value, options }) =>
+              supabaseResponse.cookies.set(name, value, options)
+            )
+          },
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({
-            request,
-          })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
-        },
-      },
+      }
+    )
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    const pathname = request.nextUrl.pathname
+    const isAuthPage = pathname.startsWith('/login') || 
+                       pathname.startsWith('/register') ||
+                       pathname.startsWith('/forgot-password')
+    const isPublicPage = pathname === '/' || 
+                         pathname.startsWith('/verify') ||
+                         pathname.startsWith('/api')
+
+    // Korumalı sayfaya giriş yapmadan erişmeye çalışıyorsa /login'e yönlendir
+    if (!user && !isAuthPage && !isPublicPage) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/login'
+      return NextResponse.redirect(url)
     }
-  )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login') || 
-                     request.nextUrl.pathname.startsWith('/register') ||
-                     request.nextUrl.pathname.startsWith('/forgot-password')
-  const isPublicPage = request.nextUrl.pathname === '/' || 
-                       request.nextUrl.pathname.startsWith('/verify')
-
-  // Korumalı sayfaya giriş yapmadan erişmeye çalışıyorsa /login'e yönlendir
-  if (!user && !isAuthPage && !isPublicPage) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
-  }
-
-  // Zaten giriş yapmışsa auth sayfalarından dashboard'a yönlendir
-  if (user && isAuthPage) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
-    return NextResponse.redirect(url)
+    // Zaten giriş yapmışsa auth sayfalarından dashboard'a yönlendir
+    if (user && isAuthPage) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/dashboard'
+      return NextResponse.redirect(url)
+    }
+  } catch (error) {
+    console.error('Middleware session error:', error)
   }
 
   return supabaseResponse
