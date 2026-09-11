@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { Logo } from '@/components/ui/logo'
 import { ShieldCheck, Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -60,11 +61,10 @@ export default function LoginPage() {
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center p-4">
       <div className="max-w-md w-full space-y-6">
         <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center justify-center size-11 rounded-xl bg-slate-900 text-white shadow-xs">
-            <ShieldCheck className="size-5 text-emerald-400" />
+          <Link href="/" className="inline-flex items-center justify-center">
+            <Logo className="h-14 sm:h-16 w-auto" height={64} width={280} priority />
           </Link>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Property Passport</h1>
-          <p className="text-xs text-slate-500">Acente ve Gayrimenkul Danışmanı Girişi</p>
+          <p className="text-xs text-slate-500 pt-1">Acente ve Gayrimenkul Danışmanı Girişi</p>
         </div>
 
         <Card className="border-slate-200 shadow-xs bg-white">

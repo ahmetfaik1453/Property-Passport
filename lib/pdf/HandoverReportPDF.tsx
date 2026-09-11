@@ -1,12 +1,26 @@
 import React from 'react'
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
+import path from 'path'
+import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer'
+
+// Türkçe karakter desteği için Arial TTF fontlarını kaydediyoruz
+try {
+  Font.register({
+    family: 'Arial',
+    fonts: [
+      { src: path.join(process.cwd(), 'public', 'fonts', 'Arial.ttf') },
+      { src: path.join(process.cwd(), 'public', 'fonts', 'Arial-Bold.ttf'), fontWeight: 'bold' }
+    ]
+  })
+} catch (e) {
+  console.warn('Font registration error:', e)
+}
 
 const styles = StyleSheet.create({
   page: {
     padding: 36,
     fontSize: 10,
     color: '#1e293b',
-    fontFamily: 'Helvetica',
+    fontFamily: 'Arial',
   },
   header: {
     marginBottom: 20,

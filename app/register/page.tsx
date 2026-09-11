@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { Logo } from '@/components/ui/logo'
 import { ShieldCheck, ArrowRight, Building2, User, Mail, Phone, Lock, AlertCircle, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -98,10 +99,10 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center p-4">
       <div className="max-w-md w-full space-y-6">
         <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center justify-center size-11 rounded-xl bg-slate-900 text-white shadow-xs">
-            <ShieldCheck className="size-5 text-emerald-400" />
+          <Link href="/" className="inline-flex items-center justify-center">
+            <Logo className="h-14 sm:h-16 w-auto" height={64} width={280} priority />
           </Link>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Acente Hesabı Oluşturun</h1>
+          <h1 className="text-xl font-bold tracking-tight text-slate-900 pt-1">Acente Hesabı Oluşturun</h1>
           <p className="text-xs text-slate-500">Property Passport ile gayrimenkul teslimatlarını güvenceye alın</p>
         </div>
 

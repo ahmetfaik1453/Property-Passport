@@ -1,22 +1,21 @@
 import Link from 'next/link'
+import { Logo } from '@/components/ui/logo'
 import { 
   ShieldCheck, 
-  FileCheck, 
-  QrCode, 
-  ArrowRight, 
+  Search, 
   Building2, 
   CheckCircle2, 
   Camera, 
-  Layers, 
   Gauge, 
   KeyRound, 
-  Lock,
-  Search,
-  Check
+  QrCode, 
+  ArrowRight,
+  ChevronRight,
+  Star,
+  MapPin,
+  FileCheck
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 
 export default function HomePage() {
   const jsonLd = {
@@ -25,177 +24,260 @@ export default function HomePage() {
     name: 'Property Passport',
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'All',
-    description: 'B2B Dijital Gayrimenkul Teslim & Kanıt Yönetim Platformu. Taşınmaz teslimatlarını ihtilafsız ve doğrulanabilir hale getirin.',
+    description: 'Gayrimenkul Teslim & Kanıt Yönetim Platformu. Taşınmaz devir teslim süreçlerini fotoğraflar, sayaç kayıtları ve doğrulanabilir QR kod ile güvenceye alın.',
     offers: {
       '@type': 'Offer',
       price: '0',
       priceCurrency: 'TRY',
     },
-    featureList: [
-      'Oda bazlı fotoğraf ve hasar kanıtı kaydı',
-      'Sayaç ve anahtar teslim tutanağı',
-      'Çift taraflı dijital onay mekanizması',
-      'Korumalı QR kod doğrulama servisi',
-      'B2B Resmi PDF tutanak çıktısı'
-    ]
   }
 
+  const featuredProperties = [
+    {
+      id: 'prop-1',
+      title: 'Nidapark Küçükyalı A Blok',
+      type: '2+1 Daire &bull; 95 m²',
+      district: 'Maltepe, İstanbul',
+      status: 'Teslime Hazır',
+      rating: '4.95',
+      reviews: 18,
+      image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+    },
+    {
+      id: 'prop-2',
+      title: 'Vadi İstanbul Park 2. Kısım',
+      type: '3+1 Rezidans &bull; 145 m²',
+      district: 'Sarıyer, İstanbul',
+      status: 'Tahliye Tesliminde',
+      rating: '4.88',
+      reviews: 24,
+      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+    },
+    {
+      id: 'prop-3',
+      title: 'Batışehir Premium Rezidans',
+      type: '1+1 Daire &bull; 68 m²',
+      district: 'Bağcılar, İstanbul',
+      status: 'Aktif Kirada',
+      rating: '4.92',
+      reviews: 14,
+      image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',
+    },
+  ]
+
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50 selection:bg-slate-900 selection:text-white">
+    <div className="flex min-h-screen flex-col bg-white text-[#222222] font-sans selection:bg-[#ff385c] selection:text-white">
       {/* Schema.org Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Header */}
-      <header className="border-b border-slate-200 bg-white/95 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="bg-slate-900 text-white p-2 rounded-lg shadow-sm">
-              <ShieldCheck className="w-5 h-5 text-emerald-400" />
-            </div>
-            <span className="font-bold text-lg text-slate-900 tracking-tight">Property Passport</span>
+      {/* Top Navbar — Airbnb 80px style with clean 1px hairline */}
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#ebebeb]">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-8 h-20 flex items-center justify-between">
+          {/* Logo / Brand */}
+          <Link href="/" className="flex items-center gap-2 py-2">
+            <Logo className="h-12 sm:h-14 w-auto" height={52} width={240} priority />
           </Link>
 
-          <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-slate-600">
-            <a href="#ozellikler" className="hover:text-slate-900 transition-colors">Özellikler</a>
-            <a href="#isleyis" className="hover:text-slate-900 transition-colors">Nasıl Çalışır?</a>
-            <a href="#guvenlik" className="hover:text-slate-900 transition-colors">Gizlilik & KVKK</a>
+          {/* Navigation Tabs (Airbnb style) */}
+          <nav className="hidden md:flex items-center gap-8 text-[15px] font-medium text-[#222222]">
+            <Link href="/properties" className="pb-1 border-b-2 border-[#222222] text-[#222222] font-semibold">
+              Taşınmazlar
+            </Link>
+            <Link href="/handovers" className="text-[#6a6a6a] hover:text-[#222222] transition-colors">
+              Teslim Tutanakları
+            </Link>
+            <Link href="/contacts" className="text-[#6a6a6a] hover:text-[#222222] transition-colors">
+              Kiracı & Malik
+            </Link>
           </nav>
 
-          <div className="flex items-center gap-2.5">
+          {/* Right Utilities */}
+          <div className="flex items-center gap-3">
+            <Link href="/dashboard" className="hidden sm:inline-block text-xs font-semibold text-[#222222] hover:bg-[#f7f7f7] px-3.5 py-2.5 rounded-full transition-colors">
+              Yönetim Paneli
+            </Link>
             <Link href="/login">
-              <Button variant="ghost" size="sm" className="h-9 text-xs font-medium text-slate-700">
+              <button className="text-xs font-medium text-[#222222] px-3 py-2 rounded-lg hover:bg-[#f7f7f7] transition-colors">
                 Giriş Yap
-              </Button>
+              </button>
             </Link>
             <Link href="/register">
-              <Button size="sm" className="h-9 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4">
-                Acente Olarak Başla
-              </Button>
+              <button className="bg-[#ff385c] hover:bg-[#e00b41] text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-xs">
+                Acente Olun
+              </button>
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <main className="flex-1">
-        <section className="pt-16 pb-20 lg:pt-24 lg:pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-800 text-xs font-semibold mb-6">
-            <span className="flex h-2 w-2 rounded-full bg-emerald-500" />
-            <span>B2B Profesyonel Gayrimenkul Teslim & Kanıt Altyapısı</span>
-          </div>
+      {/* Main Section */}
+      <main className="flex-1 max-w-[1280px] w-full mx-auto px-4 sm:px-8 py-10 sm:py-14 space-y-14">
+        {/* Signature Pill Search Bar (Airbnb search-bar-pill) */}
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-white rounded-full border border-[#dddddd] shadow-[0_2px_6px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.08)] p-2 pl-6 sm:pl-8 flex items-center justify-between hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-all">
+            <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 divide-x divide-[#ebebeb] text-left">
+              <div className="pr-4">
+                <span className="block text-[11px] font-bold text-[#222222] tracking-wider uppercase">Konum / Mülk</span>
+                <input 
+                  type="text" 
+                  placeholder="İstanbul, proje veya ilçe..." 
+                  className="w-full text-xs text-[#6a6a6a] placeholder-[#929292] focus:outline-none bg-transparent mt-0.5 truncate" 
+                />
+              </div>
+              <div className="px-4 hidden sm:block">
+                <span className="block text-[11px] font-bold text-[#222222] tracking-wider uppercase">Teslimat Türü</span>
+                <span className="block text-xs text-[#6a6a6a] mt-0.5">Giriş / Çıkış Tutanağı</span>
+              </div>
+              <div className="pl-4">
+                <span className="block text-[11px] font-bold text-[#222222] tracking-wider uppercase">Durum</span>
+                <span className="block text-xs text-[#6a6a6a] mt-0.5">Dijital Mühürlü</span>
+              </div>
+            </div>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight max-w-4xl mx-auto leading-[1.15]">
-            Taşınmaz Teslimatlarını <span className="underline decoration-slate-300 underline-offset-8">İhtilafsız ve Doğrulanabilir</span> Hale Getirin
+            {/* Rausch Search Orb */}
+            <Link href="/properties">
+              <div className="size-11 sm:size-12 rounded-full bg-[#ff385c] hover:bg-[#e00b41] text-white flex items-center justify-center shrink-0 shadow-xs transition-transform active:scale-95">
+                <Search className="size-4 sm:size-5" />
+              </div>
+            </Link>
+          </div>
+        </div>
+
+        {/* Hero Headline — Airbnb display-xl modest 28px font */}
+        <div className="text-center max-w-2xl mx-auto space-y-3 pt-2">
+          <h1 className="text-[26px] sm:text-[28px] font-bold text-[#222222] leading-snug tracking-tight">
+            Taşınmaz Teslimatlarını İhtilafsız ve Doğrulanabilir Hale Getirin
           </h1>
-
-          <p className="mt-6 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Ev sahibi, kiracı ve emlak ofisi arasında teslim anındaki oda durumlarını, demirbaşları, sayaçları ve fotoğrafları yapılandırılmış dijital kanıt olarak arşivleyin.
+          <p className="text-sm text-[#6a6a6a] leading-relaxed">
+            Oda denetimleri, demirbaşlar, sayaç okumaları ve fotoğraflı kanıtları çift taraflı dijital onay ve QR kod ile güvenceye alın.
           </p>
+        </div>
 
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href="/register" className="w-full sm:w-auto">
-              <Button size="default" className="w-full sm:w-auto h-11 px-6 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold gap-2 shadow-sm">
-                Acente Hesabını Başlat <ArrowRight className="w-4 h-4" />
-              </Button>
-            </Link>
-            <Link href="/dashboard" className="w-full sm:w-auto">
-              <Button size="default" variant="outline" className="w-full sm:w-auto h-11 px-6 text-xs font-semibold border-slate-300 hover:bg-slate-100 text-slate-800">
-                Canlı Demo Yönetim Paneli
-              </Button>
+        {/* Featured Properties — Airbnb Property Card Style (Photo-first, 14px radius) */}
+        <section className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-[21px] font-bold text-[#222222]">Örnek Teslim Portföyü</h2>
+              <p className="text-xs text-[#6a6a6a] mt-0.5">Kayıtlı dijital kanıtları ve doğrulanmış tutanakları inceleyin</p>
+            </div>
+            <Link href="/properties" className="text-xs font-semibold text-[#222222] underline underline-offset-4 hover:text-[#6a6a6a]">
+              Tümünü Gör
             </Link>
           </div>
 
-          {/* Quick Metrics & Badges */}
-          <div className="mt-14 pt-10 border-t border-slate-200 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto text-left">
-            <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs">
-              <span className="text-[11px] font-semibold text-slate-400 block uppercase">Standart</span>
-              <span className="text-sm font-bold text-slate-900 mt-1 block">8 Aşamalı Denetim</span>
-              <p className="text-xs text-slate-500 mt-0.5">Oda, demirbaş, sayaç, anahtar</p>
-            </div>
-            <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs">
-              <span className="text-[11px] font-semibold text-slate-400 block uppercase">Güvenlik</span>
-              <span className="text-sm font-bold text-slate-900 mt-1 block">SHA-256 İmzalı</span>
-              <p className="text-xs text-slate-500 mt-0.5">Değiştirilemez dijital kayıt</p>
-            </div>
-            <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs">
-              <span className="text-[11px] font-semibold text-slate-400 block uppercase">Gizlilik</span>
-              <span className="text-sm font-bold text-slate-900 mt-1 block">Privacy-by-Design</span>
-              <p className="text-xs text-slate-500 mt-0.5">Kamuya açık PII sızdırmaz</p>
-            </div>
-            <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs">
-              <span className="text-[11px] font-semibold text-slate-400 block uppercase">Doğrulama</span>
-              <span className="text-sm font-bold text-slate-900 mt-1 block">Tek Tıkla QR Kod</span>
-              <p className="text-xs text-slate-500 mt-0.5">Hızlı online geçerlilik testi</p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {featuredProperties.map((p) => (
+              <Link key={p.id} href={`/properties/${p.id}`} className="group flex flex-col space-y-3">
+                {/* Photo container with 14px radius and floating guest favorite badge */}
+                <div className="relative aspect-[4/3] rounded-[14px] overflow-hidden bg-[#f2f2f2]">
+                  <img 
+                    src={p.image} 
+                    alt={p.title} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  {/* Floating Airbnb "Guest favorite" style badge */}
+                  <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs text-[#222222] text-[11px] font-semibold px-2.5 py-1 rounded-full shadow-[0_2px_6px_rgba(0,0,0,0.08)]">
+                    Doğrulanmış Mülk
+                  </div>
+                </div>
+
+                {/* Card Meta lines */}
+                <div className="space-y-1 text-xs">
+                  <div className="flex items-center justify-between font-bold text-sm text-[#222222]">
+                    <span className="truncate">{p.title}</span>
+                    <span className="flex items-center gap-1 font-semibold text-xs shrink-0">
+                      <Star className="size-3.5 fill-[#222222] text-[#222222]" /> {p.rating}
+                    </span>
+                  </div>
+                  <p className="text-[#6a6a6a] flex items-center gap-1">
+                    <MapPin className="size-3 text-[#929292]" /> {p.district}
+                  </p>
+                  <p className="text-[#6a6a6a]" dangerouslySetInnerHTML={{ __html: p.type }} />
+                  <div className="pt-1 flex items-center justify-between">
+                    <span className="font-semibold text-[#ff385c]">{p.status}</span>
+                    <span className="text-[#929292] text-[11px]">{p.reviews} Kanıt Kayıtlı</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </section>
 
-        {/* Feature Section */}
-        <section id="ozellikler" className="py-16 bg-white border-y border-slate-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-2xl mx-auto text-center mb-12">
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-                Emlak Ofisleri İçin Hukuki ve Operasyonel Güvence
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-2">
-                Klasik matbu tutanakların yarattığı belirsizlik, kayıp fotoğraflar ve depozito anlaşmazlıklarını ortadan kaldırın.
-              </p>
+        {/* 3 Value Pillars (Airbnb clean style) */}
+        <section className="pt-8 border-t border-[#ebebeb] grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+          <div className="space-y-2">
+            <div className="size-10 rounded-full bg-[#f7f7f7] flex items-center justify-center text-[#222222]">
+              <Camera className="size-5" />
             </div>
+            <h3 className="font-bold text-sm text-[#222222]">Oda Bazlı Fotoğraf & Hasar Kaydı</h3>
+            <p className="text-xs text-[#6a6a6a] leading-relaxed">
+              Zemin, tavan, boya ve armatür durumlarını odayla eşleşen fotoğraf kanıtlarıyla mühürleyin.
+            </p>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="border-slate-200 shadow-xs bg-slate-50/50">
-                <CardContent className="p-6">
-                  <div className="size-10 rounded-lg bg-slate-900 text-white flex items-center justify-center mb-4">
-                    <Camera className="w-5 h-5" />
-                  </div>
-                  <h3 className="font-bold text-slate-900 text-sm mb-1.5">Oda Bazlı Fotoğraf & Hasar Kaydı</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Salon, mutfak, banyo ve yatak odalarında mevcut boya, zemin, armatür ve çizik durumlarını fotoğraflı olarak tutanağa bağlayın.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-slate-200 shadow-xs bg-slate-50/50">
-                <CardContent className="p-6">
-                  <div className="size-10 rounded-lg bg-slate-900 text-white flex items-center justify-center mb-4">
-                    <Gauge className="w-5 h-5" />
-                  </div>
-                  <h3 className="font-bold text-slate-900 text-sm mb-1.5">Sayaç & Anahtar Teslimi</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Elektrik, su, doğalgaz sayaç endekslerini ve teslim edilen çelik kapı, bina giriş anahtarlarını adetleriyle güvenceye alın.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-slate-200 shadow-xs bg-slate-50/50">
-                <CardContent className="p-6">
-                  <div className="size-10 rounded-lg bg-slate-900 text-white flex items-center justify-center mb-4">
-                    <QrCode className="w-5 h-5" />
-                  </div>
-                  <h3 className="font-bold text-slate-900 text-sm mb-1.5">Doğrulanabilir QR & PDF</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Her teslimat için üretilen PDF tutanak ve üzerindeki dinamik QR kod sayesinde belgenin özgünlüğü anında doğrulanabilir.
-                  </p>
-                </CardContent>
-              </Card>
+          <div className="space-y-2">
+            <div className="size-10 rounded-full bg-[#f7f7f7] flex items-center justify-center text-[#222222]">
+              <Gauge className="size-5" />
             </div>
+            <h3 className="font-bold text-sm text-[#222222]">Sayaç & Anahtar Mutabakatı</h3>
+            <p className="text-xs text-[#6a6a6a] leading-relaxed">
+              Elektrik, su, doğalgaz endekslerini ve teslim edilen anahtar adetlerini şeffaf biçimde tutanağa bağlayın.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <div className="size-10 rounded-full bg-[#f7f7f7] flex items-center justify-center text-[#222222]">
+              <QrCode className="size-5" />
+            </div>
+            <h3 className="font-bold text-sm text-[#222222]">Doğrulanabilir QR & PDF</h3>
+            <p className="text-xs text-[#6a6a6a] leading-relaxed">
+              Her teslimat için üretilen PDF rapor üzerindeki güvenli QR kod ile belgenin orijinalliği anında doğrulanır.
+            </p>
           </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 py-10 text-xs border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-white font-semibold">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>Property Passport &copy; 2026</span>
+      {/* Footer — Airbnb 3-column clean light footer */}
+      <footer className="bg-[#f7f7f7] border-t border-[#dddddd] text-xs text-[#222222] py-10 mt-14">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-8 space-y-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="space-y-2">
+              <h4 className="font-bold text-[#222222]">Platform</h4>
+              <ul className="space-y-1.5 text-[#6a6a6a]">
+                <li><Link href="/properties" className="hover:underline">Mülk Portföyü</Link></li>
+                <li><Link href="/handovers" className="hover:underline">Teslim Tutanakları</Link></li>
+                <li><Link href="/dashboard" className="hover:underline">Yönetim Paneli</Link></li>
+              </ul>
+            </div>
+            <div className="space-y-2">
+              <h4 className="font-bold text-[#222222]">Acente & Kurumsal</h4>
+              <ul className="space-y-1.5 text-[#6a6a6a]">
+                <li><Link href="/register" className="hover:underline">Acente Kaydı</Link></li>
+                <li><Link href="/settings" className="hover:underline">Acente Ayarları</Link></li>
+                <li><Link href="/contacts" className="hover:underline">Kiracı & Malik Rehberi</Link></li>
+              </ul>
+            </div>
+            <div className="space-y-2">
+              <h4 className="font-bold text-[#222222]">Güvenlik & Gizlilik</h4>
+              <p className="text-[#6a6a6a] leading-relaxed">
+                Platformumuz Privacy-by-Design ve KVKK ilkeleriyle çalışır. Kamuya açık doğrulama sayfalarında kişisel veriler gizlenir.
+              </p>
+            </div>
           </div>
-          <p className="text-[11px] text-slate-400 max-w-xl text-center sm:text-right">
-            Hukuki Uyarı: Property Passport yapılandırılmış bir dijital durum tespit platformudur. Resmi nitelikli elektronik imza veya mahkeme bilirkişi raporu hükmünde olmayıp, taraflar arası ihtilafları önleyici güçlü yazılı kanıt niteliğindedir.
-          </p>
+
+          <div className="pt-6 border-t border-[#dddddd] flex flex-col sm:flex-row items-center justify-between gap-4 text-[#6a6a6a] text-[11px]">
+            <div>&copy; 2026 Property Passport, Inc. Tüm hakları saklıdır.</div>
+            <div className="flex items-center gap-4">
+              <span>Gizlilik</span>
+              <span>&bull;</span>
+              <span>Kullanım Koşulları</span>
+              <span>&bull;</span>
+              <span>KVKK Aydınlatma</span>
+            </div>
+          </div>
         </div>
       </footer>
     </div>

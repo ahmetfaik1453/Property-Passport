@@ -13,15 +13,16 @@ export const viewport: Viewport = {
   themeColor: '#0f172a',
 }
 
-const siteUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+// Vercel deployment veya environment URL
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://property-passport-livid.vercel.app')
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Property Passport - Dijital Gayrimenkul Kanıt ve Teslim Yönetimi',
+    default: 'Property Passport - Gayrimenkul Teslim Yönetimi',
     template: '%s | Property Passport',
   },
-  description: 'Taşınmaz devir teslim süreçlerini yapılandırılmış dijital kanıtlar, fotoğraflar, sayaç kayıtları ve doğrulanabilir QR kod ile güvenceye alın.',
+  description: 'Taşınmaz devir teslim süreçlerini yapılandırılmış dijital kanıtlar, sayaç kayıtları ve doğrulanabilir QR kod ile güvenceye alın.',
   keywords: [
     'gayrimenkul teslim tutanağı',
     'dijital mülk pasaportu',
@@ -40,13 +41,13 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'tr_TR',
     url: siteUrl,
-    title: 'Property Passport - Dijital Gayrimenkul Kanıt ve Teslim Yönetimi',
+    title: 'Property Passport - Gayrimenkul Teslim Yönetimi',
     description: 'Taşınmaz devir teslim süreçlerini fotoğraflar, sayaç kayıtları ve doğrulanabilir QR kod ile güvenceye alın.',
     siteName: 'Property Passport',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Property Passport - Dijital Gayrimenkul Kanıt ve Teslim Yönetimi',
+    title: 'Property Passport - Gayrimenkul Teslim Yönetimi',
     description: 'Taşınmaz devir teslim süreçlerini dijital kanıtlarla ihtilafsız yönetin.',
   },
   robots: {
