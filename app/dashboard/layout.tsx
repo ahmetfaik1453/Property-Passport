@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Logo } from '@/components/ui/logo'
+import { createClient } from '@/utils/supabase/client'
 import { 
   ShieldCheck, 
   Building2, 
@@ -20,6 +21,18 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const router = useRouter()
+  const supabase = createClient()
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut()
+    } catch (e) {
+      console.error(e)
+    }
+    router.push('/login')
+    router.refresh()
+  }
 
   const navLinks = [
     { href: '/dashboard', label: 'Kontrol Paneli', icon: Home },
@@ -82,13 +95,14 @@ export default function DashboardLayout({
             <Settings className="w-4 h-4 text-[#6a6a6a]" />
             <span>Ayarlar</span>
           </Link>
-          <Link
-            href="/login"
-            className="flex items-center gap-3 px-3.5 py-2 rounded-lg text-[#6a6a6a] hover:text-[#c13515] hover:bg-[#ffd1da]/30 transition-colors"
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3.5 py-2 rounded-lg text-[#6a6a6a] hover:text-[#c13515] hover:bg-[#ffd1da]/30 transition-colors text-left"
           >
             <LogOut className="w-4 h-4 text-[#c13515]" />
             <span>Çıkış Yap</span>
-          </Link>
+          </button>
         </div>
       </aside>
 
@@ -99,9 +113,25 @@ export default function DashboardLayout({
           <Link href="/dashboard" className="flex items-center">
             <Logo className="h-9 w-auto" height={36} width={160} />
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            <Link href="/settings">
+              <button 
+                title="Ayarlar"
+                className={`p-1.5 rounded-lg border border-[#ebebeb] text-[#717171] hover:text-[#222222] hover:bg-[#f7f7f7] ${pathname === '/settings' ? 'bg-[#f7f7f7] text-[#222222]' : ''}`}
+              >
+                <Settings className="size-4" />
+              </button>
+            </Link>
+            <button
+              type="button"
+              onClick={handleLogout}
+              title="Çıkış Yap"
+              className="p-1.5 rounded-lg border border-[#ebebeb] text-[#717171] hover:text-[#c13515] hover:bg-[#ffd1da]/30"
+            >
+              <LogOut className="size-4" />
+            </button>
             <Link href="/properties/new">
-              <button className="bg-[#ff385c] text-white text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1">
+              <button className="bg-[#ff385c] text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg flex items-center gap-1 ml-1">
                 <Plus className="w-3.5 h-3.5" /> Mülk
               </button>
             </Link>

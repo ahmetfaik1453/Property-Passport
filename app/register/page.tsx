@@ -83,13 +83,31 @@ export default function RegisterPage() {
       })
 
       if (error) {
-        console.warn('Supabase Auth Notice:', error.message)
+        if (error.code === 'user_already_exists' || error.message.includes('already registered')) {
+          setGeneralError('Bu e-posta adresi ile kayıtlı bir hesap zaten var. Lütfen giriş yapınız veya şifrenizi sıfırlayınız.')
+        } else if (error.code === 'over_email_send_rate_limit' || error.message.includes('rate limit') || error.message.includes('security purposes')) {
+          setGeneralError('E-posta güvenlik sınırı: Kısa süre içinde çok sayıda kayıt veya onay e-postası talep edildi. Hesabınız oluşturulduysa lütfen gelen kutunuzu kontrol edin veya birkaç dakika bekleyip tekrar deneyin.')
+        } else if (error.message.includes('invalid')) {
+          setGeneralError('Lütfen geçerli bir kurumsal e-posta adresi giriniz (Örn: Gmail, Outlook veya şirket alan adınız).')
+        } else {
+          setGeneralError(error.message || 'Kayıt işlemi gerçekleştirilemedi.')
+        }
+        return
       }
 
-      router.push('/dashboard')
-    } catch (err) {
-      console.error(err)
-      router.push('/dashboard')
+      // If user session exists (auto-confirm enabled), redirect to dashboard
+      if (data?.session) {
+        router.push('/dashboard')
+        router.refresh()
+      } else if (data?.user) {
+        // Confirmation email sent
+        router.push('/login?registered=check-email')
+      } else {
+        setGeneralError('Hesap oluşturulamadı. Lütfen tekrar deneyiniz.')
+      }
+    } catch (err: any) {
+      console.error('Registration error:', err)
+      setGeneralError('Kayıt esnasında beklenmeyen bir hata oluştu: ' + (err?.message || 'Lütfen tekrar deneyiniz.'))
     } finally {
       setLoading(false)
     }

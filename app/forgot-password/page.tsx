@@ -3,10 +3,11 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { Logo } from '@/components/ui/logo'
-import { ShieldCheck, Mail, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react'
+import { ShieldCheck, Mail, ArrowRight, ArrowLeft, CheckCircle2, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
+import { createClient } from '@/utils/supabase/client'
 import { isValidEmail } from '@/lib/validations'
 
 export default function ForgotPasswordPage() {
@@ -14,10 +15,13 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [emailError, setEmailError] = useState('')
+  const [errorMsg, setErrorMsg] = useState('')
+  const supabase = createClient()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setEmailError('')
+    setErrorMsg('')
 
     if (!isValidEmail(email)) {
       setEmailError('Lütfen geçerli bir e-posta adresi giriniz.')
@@ -25,10 +29,28 @@ export default function ForgotPasswordPage() {
     }
 
     setLoading(true)
-    setTimeout(() => {
-      setLoading(false)
+
+    try {
+      const redirectUrl = typeof window !== 'undefined' ? `${window.location.origin}/auth/callback?next=/settings` : undefined
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: redirectUrl,
+      })
+
+      if (error) {
+        if (error.code === 'over_email_send_rate_limit' || error.message.includes('rate limit')) {
+          setErrorMsg('E-posta güvenlik sınırı: Çok sık sıfırlama bağlantısı talep edildi. Lütfen birkaç dakika bekleyiniz.')
+        } else {
+          setErrorMsg(error.message || 'Sıfırlama bağlantısı gönderilemedi.')
+        }
+        return
+      }
+
       setSubmitted(true)
-    }, 600)
+    } catch (err: any) {
+      setErrorMsg('Bir hata oluştu: ' + (err?.message || 'Lütfen tekrar deneyiniz.'))
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -58,6 +80,13 @@ export default function ForgotPasswordPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
+                {errorMsg && (
+                  <div className="p-3 text-xs bg-red-50 text-red-700 rounded-lg border border-red-200 flex items-center gap-2">
+                    <AlertCircle className="size-4 shrink-0" />
+                    <span>{errorMsg}</span>
+                  </div>
+                )}
+
                 <div className="flex flex-col gap-1">
                   <label className="text-xs font-semibold text-slate-700">E-posta Adresi</label>
                   <div className="relative">
