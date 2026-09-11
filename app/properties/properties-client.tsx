@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { 
   Building2, 
@@ -8,13 +8,29 @@ import {
   MapPin, 
   ArrowRight, 
   Search,
-  Star
+  Star,
+  ShieldCheck
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { createClient } from '@/utils/supabase/client'
 
 export default function PropertiesPageClient() {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('ALL')
+  const [user, setUser] = useState<any>(null)
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        setUser(user)
+      } catch {
+        setUser(null)
+      }
+    }
+    checkAuth()
+  }, [])
 
   const sampleProperties = [
     {
@@ -133,17 +149,53 @@ export default function PropertiesPageClient() {
 
   return (
     <div className="w-full space-y-8">
+      {/* Demo / Örnek Görünüm Bilgilendirme Bannerı (Giriş yapılmadığında) */}
+      {!user && (
+        <div className="bg-[#fff8f6] border border-[#ffd1da] rounded-xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-start sm:items-center gap-2.5">
+            <span className="size-2.5 rounded-full bg-[#ff385c] shrink-0 mt-1 sm:mt-0 animate-pulse" />
+            <div>
+              <span className="font-bold text-[#222222] text-[13px]">Örnek Teslim Portföyü (Ziyaretçi Görünümü)</span>
+              <p className="text-[#717171] mt-0.5">
+                Şu anda platformun canlı teslim tutanaklarını ve mülk durum kayıtlarını örnek portföy üzerinden inceliyorsunuz. Kendi acentenizin portföyünü yönetmek için giriş yapabilirsiniz.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <Link href="/login">
+              <button className="h-8 px-3.5 text-xs font-semibold bg-[#222222] hover:bg-black text-white rounded-lg transition-colors">
+                Giriş Yap
+              </button>
+            </Link>
+            <Link href="/register">
+              <button className="h-8 px-3.5 text-xs font-semibold border border-[#dddddd] hover:bg-white text-[#222222] rounded-lg transition-colors">
+                Kayıt Ol
+              </button>
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#ebebeb]">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-[24px] font-bold text-[#222222] tracking-tight">Mülk Portföyü</h1>
+            <h1 className="text-[24px] font-bold text-[#222222] tracking-tight">
+              {user ? 'Mülk Portföyü' : 'Örnek Mülk Portföyü'}
+            </h1>
             <span className="text-xs bg-[#f7f7f7] text-[#6a6a6a] px-2.5 py-0.5 rounded-full font-semibold border border-[#ebebeb]">
               {sampleProperties.length} Taşınmaz
             </span>
+            {!user && (
+              <span className="text-[11px] bg-[#fff8f6] text-[#c13515] px-2.5 py-0.5 rounded-full font-semibold border border-[#ffd1da]">
+                Demo İnceleme
+              </span>
+            )}
           </div>
           <p className="text-xs text-[#6a6a6a] mt-1">
-            Ajansınıza kayıtlı taşınmazlar, oda dökümleri, kiracı geçmişi ve kanıt tutanakları
+            {user 
+              ? 'Ajansınıza kayıtlı taşınmazlar, oda dökümleri, kiracı geçmişi ve kanıt tutanakları' 
+              : 'Doğrulanabilir dijital kanıt modeliyle kayıt altına alınmış örnek taşınmazlar ve teslimat geçmişi'}
           </p>
         </div>
 

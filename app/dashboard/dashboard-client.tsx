@@ -1,5 +1,6 @@
 'use client'
 
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { 
   Building2, 
@@ -19,8 +20,24 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { createClient } from '@/utils/supabase/client'
 
 export default function DashboardPageClient() {
+  const [user, setUser] = useState<any>(null)
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        setUser(user)
+      } catch {
+        setUser(null)
+      }
+    }
+    checkAuth()
+  }, [])
+
   const recentHandovers = [
     {
       id: 'ho-101',
@@ -34,6 +51,7 @@ export default function DashboardPageClient() {
       statusText: 'Onay Bekliyor',
       date: '11 Eylül 2026',
       token: 'demo-token-1',
+      image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=400&q=80',
     },
     {
       id: 'ho-102',
@@ -47,6 +65,7 @@ export default function DashboardPageClient() {
       statusText: 'Tamamlandı & Doğrulandı',
       date: '10 Eylül 2026',
       token: 'demo-token-vadi',
+      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80',
     },
     {
       id: 'ho-103',
@@ -60,15 +79,52 @@ export default function DashboardPageClient() {
       statusText: 'Taslak (Saha)',
       date: '08 Eylül 2026',
       token: 'demo-token-bati',
+      image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=400&q=80',
     },
   ]
 
   return (
     <div className="flex flex-col gap-6">
+      {/* Demo / Örnek Görünüm Bilgilendirme Bannerı */}
+      {!user && (
+        <div className="bg-[#fff8f6] border border-[#ffd1da] rounded-xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-start sm:items-center gap-2.5">
+            <span className="size-2.5 rounded-full bg-[#ff385c] shrink-0 mt-1 sm:mt-0 animate-pulse" />
+            <div>
+              <span className="font-bold text-[#222222] text-[13px]">Örnek Yönetim Paneli (Ziyaretçi Önizleme)</span>
+              <p className="text-[#717171] mt-0.5">
+                Şu anda platformun canlı kontrol panelini örnek acente verileriyle inceliyorsunuz.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <Link href="/login">
+              <button className="h-8 px-3.5 text-xs font-semibold bg-[#222222] hover:bg-black text-white rounded-lg transition-colors">
+                Giriş Yap
+              </button>
+            </Link>
+            <Link href="/register">
+              <button className="h-8 px-3.5 text-xs font-semibold border border-[#dddddd] hover:bg-white text-[#222222] rounded-lg transition-colors">
+                Hesap Oluştur
+              </button>
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#dddddd]">
         <div>
-          <h1 className="text-[22px] font-bold tracking-tight text-[#222222]">Prestij Gayrimenkul Yönetim Paneli</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-[22px] font-bold tracking-tight text-[#222222]">
+              {user ? 'Prestij Gayrimenkul Yönetim Paneli' : 'Örnek Gayrimenkul Yönetim Paneli'}
+            </h1>
+            {!user && (
+              <Badge variant="secondary" className="text-[11px] font-medium bg-[#f7f7f7] text-[#717171] border border-[#dddddd] rounded-full px-2">
+                Örnek Görünüm
+              </Badge>
+            )}
+          </div>
           <p className="text-[14px] text-[#717171] mt-0.5">
             Aktif portföy, saha denetimleri ve doğrulanabilir dijital kanıt kayıtları
           </p>
@@ -169,11 +225,16 @@ export default function DashboardPageClient() {
             {recentHandovers.map((item) => (
               <TableRow key={item.id} className="border-b border-[#ebebeb] hover:bg-[#f7f7f7]/60 transition-colors">
                 <TableCell>
-                  <div className="flex flex-col">
-                    <span className="font-semibold text-[13px] text-[#222222]">{item.title}</span>
-                    <span className="text-[12px] text-[#717171] flex items-center gap-1 mt-0.5">
-                      <MapPin className="size-3 text-[#ff385c]" /> {item.district}
-                    </span>
+                  <div className="flex items-center gap-3">
+                    <div className="size-11 rounded-lg overflow-hidden shrink-0 bg-[#f0f0f0] border border-[#ebebeb]">
+                      <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-semibold text-[13px] text-[#222222] truncate">{item.title}</span>
+                      <span className="text-[12px] text-[#717171] flex items-center gap-1 mt-0.5 truncate">
+                        <MapPin className="size-3 text-[#ff385c] shrink-0" /> {item.district}
+                      </span>
+                    </div>
                   </div>
                 </TableCell>
                 <TableCell className="text-[13px] font-medium text-[#222222]">{item.type}</TableCell>

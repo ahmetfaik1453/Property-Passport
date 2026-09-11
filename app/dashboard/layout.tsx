@@ -1,5 +1,6 @@
 'use client'
 
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Logo } from '@/components/ui/logo'
@@ -24,12 +25,30 @@ export default function DashboardLayout({
   const router = useRouter()
   const supabase = createClient()
 
+  const [user, setUser] = React.useState<any>(null)
+  const [loading, setLoading] = React.useState(true)
+
+  React.useEffect(() => {
+    async function checkUser() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        setUser(user)
+      } catch {
+        setUser(null)
+      } finally {
+        setLoading(false)
+      }
+    }
+    checkUser()
+  }, [])
+
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut()
     } catch (e) {
       console.error(e)
     }
+    setUser(null)
     router.push('/login')
     router.refresh()
   }
@@ -51,15 +70,39 @@ export default function DashboardLayout({
 
         {/* Agency Switcher / Info */}
         <div className="p-4 border-b border-[#ebebeb]">
-          <div className="bg-[#f7f7f7] rounded-xl p-3 flex items-center gap-3 border border-[#ebebeb]">
-            <div className="size-8 rounded-lg bg-[#ff385c]/10 text-[#ff385c] flex items-center justify-center font-bold text-xs">
-              PG
+          {user ? (
+            <div className="bg-[#f7f7f7] rounded-xl p-3 flex items-center gap-3 border border-[#ebebeb]">
+              <div className="size-8 rounded-lg bg-[#ff385c]/10 text-[#ff385c] flex items-center justify-center font-bold text-xs">
+                PG
+              </div>
+              <div className="overflow-hidden">
+                <p className="text-xs font-semibold text-[#222222] truncate">Prestij Gayrimenkul</p>
+                <p className="text-[10px] text-[#6a6a6a] truncate">Acente Yöneticisi</p>
+              </div>
             </div>
-            <div className="overflow-hidden">
-              <p className="text-xs font-semibold text-[#222222] truncate">Prestij Gayrimenkul</p>
-              <p className="text-[10px] text-[#6a6a6a] truncate">Acente Yöneticisi</p>
+          ) : (
+            <div className="bg-[#fff8f6] rounded-xl p-3 border border-[#ffd1da]">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="size-2 rounded-full bg-[#ff385c] animate-pulse" />
+                <span className="text-[11px] font-bold text-[#c13515] uppercase tracking-wider">Örnek Demo Modu</span>
+              </div>
+              <p className="text-[11px] text-[#717171] leading-tight">
+                Sistem özelliklerini keşfediyorsunuz. Kendi portföyünüz için giriş yapın.
+              </p>
+              <div className="mt-2.5 flex items-center gap-2">
+                <Link href="/login" className="flex-1">
+                  <button className="w-full h-7 text-[11px] font-semibold bg-[#222222] hover:bg-black text-white rounded-md transition-colors">
+                    Giriş Yap
+                  </button>
+                </Link>
+                <Link href="/register" className="flex-1">
+                  <button className="w-full h-7 text-[11px] font-semibold border border-[#dddddd] hover:bg-white text-[#222222] rounded-md transition-colors">
+                    Kayıt Ol
+                  </button>
+                </Link>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Navigation Links */}
