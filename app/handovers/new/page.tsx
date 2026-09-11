@@ -91,7 +91,7 @@ export default function HandoverWizardPage() {
   ]
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-12">
+    <div className="max-w-4xl mx-auto flex flex-col gap-6 pb-12">
       {/* Wizard Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -131,15 +131,15 @@ export default function HandoverWizardPage() {
 
       {/* STEP 1: Mülk ve Taraflar */}
       {currentStep === 1 && (
-        <Card>
+        <Card className="shadow-none border-slate-200">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Building2 className="w-5 h-5 text-blue-600" />
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Building2 className="size-4 text-blue-600" />
               1. Teslim Türü, Mülk ve Taraf Seçimi
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
+          <CardContent className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
               <label className="text-xs font-semibold text-slate-700">Teslim Türü</label>
               <div className="grid grid-cols-2 gap-4">
                 <button
@@ -170,19 +170,19 @@ export default function HandoverWizardPage() {
               </div>
             </div>
 
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-slate-700">Taşınmaz (Mülk)</label>
-              <Input value={selectedProperty} readOnly className="bg-slate-50" />
+              <Input value={selectedProperty} readOnly className="bg-slate-50 text-xs h-9" />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-slate-700">Mülk Sahibi (Landlord)</label>
-                <Input value={landlordName} onChange={(e) => setLandlordName(e.target.value)} />
+                <Input value={landlordName} onChange={(e) => setLandlordName(e.target.value)} className="text-xs h-9" />
               </div>
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-slate-700">Kiracı (Tenant)</label>
-                <Input value={tenantName} onChange={(e) => setTenantName(e.target.value)} />
+                <Input value={tenantName} onChange={(e) => setTenantName(e.target.value)} className="text-xs h-9" />
               </div>
             </div>
           </CardContent>
@@ -191,35 +191,35 @@ export default function HandoverWizardPage() {
 
       {/* STEP 2: Oda Denetimi */}
       {currentStep === 2 && (
-        <Card>
+        <Card className="shadow-none border-slate-200">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <FileCheck className="w-5 h-5 text-blue-600" />
+            <CardTitle className="flex items-center gap-2 text-base">
+              <FileCheck className="size-4 text-blue-600" />
               2. Oda Bazlı Fiziksel Durum Kontrolleri
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="flex flex-col gap-3">
             {rooms.map((room) => (
-              <div key={room.id} className="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
+              <div key={room.id} className="p-3.5 rounded-xl border border-slate-200 bg-white flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-semibold text-slate-900">{room.name}</h4>
+                  <h4 className="font-semibold text-sm text-slate-900">{room.name}</h4>
                   <select
                     value={room.condition}
                     onChange={(e) => {
                       const updated = rooms.map((r) => r.id === room.id ? { ...r, condition: e.target.value } : r)
                       setRooms(updated)
                     }}
-                    className="text-xs font-semibold rounded-lg border border-slate-200 px-2.5 py-1.5 bg-slate-50 text-slate-800"
+                    className="text-xs font-semibold rounded-lg border border-slate-200 px-2 py-1 bg-slate-50 text-slate-800"
                   >
-                    <option value="GOOD">Kusursuz / İyi (Good)</option>
-                    <option value="USED">Kullanılmış / Normal (Used)</option>
-                    <option value="SCRATCHED">Çizik / Yıpranmış (Scratched)</option>
-                    <option value="DAMAGED">Hasarlı (Damaged)</option>
+                    <option value="GOOD">Kusursuz / İyi</option>
+                    <option value="USED">Kullanılmış / Normal</option>
+                    <option value="SCRATCHED">Çizik / Yıpranmış</option>
+                    <option value="DAMAGED">Hasarlı</option>
                     <option value="REQUIRES_ATTENTION">Onarım Gerektirir</option>
                   </select>
                 </div>
 
-                <div className="space-y-1">
+                <div className="flex flex-col gap-1">
                   <label className="text-[11px] text-slate-500 font-medium">Oda İnceleme Notu</label>
                   <Input
                     value={room.notes}
@@ -227,7 +227,7 @@ export default function HandoverWizardPage() {
                       const updated = rooms.map((r) => r.id === room.id ? { ...r, notes: e.target.value } : r)
                       setRooms(updated)
                     }}
-                    className="text-xs"
+                    className="text-xs h-8"
                   />
                 </div>
               </div>
@@ -238,14 +238,14 @@ export default function HandoverWizardPage() {
 
       {/* STEP 3: Kanıt Yükleme */}
       {currentStep === 3 && (
-        <Card>
+        <Card className="shadow-none border-slate-200">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Camera className="w-5 h-5 text-blue-600" />
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Camera className="size-4 text-blue-600" />
               3. Odaya Bağlı Fotoğraf & Video Kanıtları
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="flex flex-col gap-4">
             <p className="text-xs text-slate-500">
               Her fotoğraf ilgili odayla ilişkilendirilerek Supabase Private Evidence Bucket&apos;ına güvenle kaydedilir.
             </p>
@@ -263,7 +263,7 @@ export default function HandoverWizardPage() {
 
                   <div className="mt-4 pt-3 border-t border-slate-200/80 flex items-center justify-between">
                     <label className="cursor-pointer inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700">
-                      <Upload className="w-3.5 h-3.5" /> Fotoğraf Yükle (Kamera)
+                      <Upload className="size-3.5" /> Fotoğraf Yükle (Kamera)
                       <input
                         type="file"
                         accept="image/*"
@@ -285,21 +285,21 @@ export default function HandoverWizardPage() {
 
       {/* STEP 4: Demirbaşlar */}
       {currentStep === 4 && (
-        <Card>
+        <Card className="shadow-none border-slate-200">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Layers className="w-5 h-5 text-blue-600" />
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Layers className="size-4 text-blue-600" />
               4. Taşınmaz Demirbaş Envanteri
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="flex flex-col gap-3">
             {inventories.map((item, idx) => (
               <div key={idx} className="p-3.5 rounded-xl border border-slate-200 flex items-center justify-between">
                 <div>
                   <p className="font-semibold text-slate-900 text-sm">{item.name}</p>
                   <p className="text-xs text-slate-500">{item.brand} - {item.model}</p>
                 </div>
-                <Badge variant="success">Çalışır / Sağlam</Badge>
+                <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">Çalışır / Sağlam</Badge>
               </div>
             ))}
           </CardContent>
@@ -308,21 +308,21 @@ export default function HandoverWizardPage() {
 
       {/* STEP 5: Sayaçlar ve Anahtarlar */}
       {currentStep === 5 && (
-        <Card>
+        <Card className="shadow-none border-slate-200">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Gauge className="w-5 h-5 text-blue-600" />
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Gauge className="size-4 text-blue-600" />
               5. Sayaç Değerleri & Teslim Edilen Anahtarlar
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="flex flex-col gap-4">
             <div>
-              <h4 className="text-sm font-semibold text-slate-900 mb-3">Sayaç Okumaları</h4>
+              <h4 className="text-sm font-semibold text-slate-900 mb-2">Sayaç Okumaları</h4>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {meters.map((meter, idx) => (
                   <div key={idx} className="p-3 rounded-lg border border-slate-200 bg-slate-50">
                     <p className="text-xs text-slate-500">{meter.type} ({meter.number})</p>
-                    <p className="text-lg font-bold text-slate-900 mt-1">
+                    <p className="text-base font-bold text-slate-900 mt-1">
                       {meter.value} <span className="text-xs font-normal text-slate-600">{meter.unit}</span>
                     </p>
                   </div>
@@ -330,11 +330,11 @@ export default function HandoverWizardPage() {
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-100">
-              <h4 className="text-sm font-semibold text-slate-900 mb-3">Anahtar Teslimatı</h4>
-              <div className="space-y-2">
+            <div className="pt-3 border-t border-slate-100">
+              <h4 className="text-sm font-semibold text-slate-900 mb-2">Anahtar Teslimatı</h4>
+              <div className="flex flex-col gap-2">
                 {keys.map((k, idx) => (
-                  <div key={idx} className="p-3 rounded-lg border border-slate-200 flex items-center justify-between text-xs">
+                  <div key={idx} className="p-2.5 rounded-lg border border-slate-200 flex items-center justify-between text-xs">
                     <span className="font-medium text-slate-800">{k.type}</span>
                     <Badge variant="secondary">{k.count} Adet</Badge>
                   </div>
@@ -347,14 +347,14 @@ export default function HandoverWizardPage() {
 
       {/* STEP 6: İnceleme ve Özet */}
       {currentStep === 6 && (
-        <Card>
+        <Card className="shadow-none border-slate-200">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+            <CardTitle className="flex items-center gap-2 text-base">
+              <CheckCircle2 className="size-4 text-emerald-600" />
               6. Teslimat Öncesi Özet ve Kontrol Listesi
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="flex flex-col gap-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 text-center">
               <div>
                 <p className="text-xs text-slate-500">Denetlenen Oda</p>
@@ -376,8 +376,8 @@ export default function HandoverWizardPage() {
               </div>
             </div>
 
-            <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/50 text-xs text-emerald-900 flex items-center gap-2">
-              <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+            <div className="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/50 text-xs text-emerald-900 flex items-center gap-2">
+              <Check className="size-4 text-emerald-600 shrink-0" />
               <span>Tüm kritik odalar ve sayaçlar kontrol edildi. Tutanak tarafların onayına hazır.</span>
             </div>
           </CardContent>
@@ -386,57 +386,52 @@ export default function HandoverWizardPage() {
 
       {/* STEP 7: Dijital Onay Akışı */}
       {currentStep === 7 && (
-        <Card>
+        <Card className="shadow-none border-slate-200">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Users className="w-5 h-5 text-blue-600" />
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Users className="size-4 text-blue-600" />
               7. Tarafların Dijital Onay Akışı
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="flex flex-col gap-3">
             <p className="text-xs text-slate-500">
               Bu onaylar sistem içi beyan ve mutabakat amaçlıdır (Resmi nitelikli e-imza değildir).
             </p>
 
-            <div className="space-y-3">
-              {/* Agent */}
-              <div className="p-4 rounded-xl border border-slate-200 flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-slate-900 text-sm">Emlak Danışmanı (Yetkili)</p>
-                  <p className="text-xs text-slate-500">Prestij Gayrimenkul</p>
-                </div>
-                <Badge variant="success">Onaylandı (11 Eylül 2026)</Badge>
+            <div className="p-3.5 rounded-xl border border-slate-200 flex items-center justify-between">
+              <div>
+                <p className="font-semibold text-slate-900 text-sm">Emlak Danışmanı (Yetkili)</p>
+                <p className="text-xs text-slate-500">Prestij Gayrimenkul</p>
               </div>
+              <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">Onaylandı (11 Eylül 2026)</Badge>
+            </div>
 
-              {/* Tenant */}
-              <div className="p-4 rounded-xl border border-slate-200 flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-slate-900 text-sm">Kiracı: {tenantName}</p>
-                  <p className="text-xs text-slate-500">Teslim durumunu kabul eder</p>
-                </div>
-                {tenantApproved ? (
-                  <Badge variant="success">Onaylandı</Badge>
-                ) : (
-                  <Button size="sm" onClick={() => setTenantApproved(true)}>
-                    Kiracı Adına Onayla (Demo)
-                  </Button>
-                )}
+            <div className="p-3.5 rounded-xl border border-slate-200 flex items-center justify-between">
+              <div>
+                <p className="font-semibold text-slate-900 text-sm">Kiracı: {tenantName}</p>
+                <p className="text-xs text-slate-500">Teslim durumunu kabul eder</p>
               </div>
+              {tenantApproved ? (
+                <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">Onaylandı</Badge>
+              ) : (
+                <Button size="sm" variant="outline" onClick={() => setTenantApproved(true)} className="h-8 text-xs">
+                  Kiracı Adına Onayla (Demo)
+                </Button>
+              )}
+            </div>
 
-              {/* Landlord */}
-              <div className="p-4 rounded-xl border border-slate-200 flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-slate-900 text-sm">Mülk Sahibi: {landlordName}</p>
-                  <p className="text-xs text-slate-500">Teslim durumunu kabul eder</p>
-                </div>
-                {landlordApproved ? (
-                  <Badge variant="success">Onaylandı</Badge>
-                ) : (
-                  <Button size="sm" onClick={() => setLandlordApproved(true)}>
-                    Mülk Sahibi Adına Onayla (Demo)
-                  </Button>
-                )}
+            <div className="p-3.5 rounded-xl border border-slate-200 flex items-center justify-between">
+              <div>
+                <p className="font-semibold text-slate-900 text-sm">Mülk Sahibi: {landlordName}</p>
+                <p className="text-xs text-slate-500">Teslim durumunu kabul eder</p>
               </div>
+              {landlordApproved ? (
+                <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">Onaylandı</Badge>
+              ) : (
+                <Button size="sm" variant="outline" onClick={() => setLandlordApproved(true)} className="h-8 text-xs">
+                  Mülk Sahibi Adına Onayla (Demo)
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -444,49 +439,45 @@ export default function HandoverWizardPage() {
 
       {/* STEP 8: Tamamlama, PDF & QR Doğrulama */}
       {currentStep === 8 && (
-        <Card className="border-emerald-200 bg-emerald-50/20">
+        <Card className="border-emerald-200 bg-emerald-50/20 shadow-none">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg text-emerald-950">
-              <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+            <CardTitle className="flex items-center gap-2 text-base text-emerald-950">
+              <CheckCircle2 className="size-5 text-emerald-600" />
               8. Teslimat Başarıyla Tamamlandı ve Kilitlendi
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="flex flex-col gap-4">
             <p className="text-xs text-slate-600">
               Tutanak değiştirilemez biçimde arşivlendi. Değişiklikler yalnızca audit log üzerinde izlenebilir.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* PDF Download Card */}
-              <div className="p-5 rounded-xl border border-slate-200 bg-white space-y-3">
+              <div className="p-4 rounded-xl border border-slate-200 bg-white space-y-2.5">
                 <div className="flex items-center gap-2 font-semibold text-slate-900 text-sm">
-                  <Download className="w-4 h-4 text-blue-600" />
+                  <Download className="size-4 text-blue-600" />
                   Dijital Teslim Raporu (PDF)
                 </div>
                 <p className="text-xs text-slate-500">
                   Tüm oda fotoğraflarını, sayaç değerlerini ve onay dökümünü içeren resmi B2B teslim belgesi.
                 </p>
-                <Button
-                  size="sm"
-                  className="w-full bg-slate-900 gap-2"
-                  onClick={() => alert('Resmi PDF tutanağı başarıyla indirildi!')}
-                >
-                  <Download className="w-3.5 h-3.5" /> PDF Tutanağını İndir
-                </Button>
+                <Link href="/api/handovers/ho-101/pdf" target="_blank">
+                  <Button size="sm" className="w-full bg-slate-900 text-white gap-2 h-8 text-xs">
+                    <Download className="size-3.5" /> PDF Tutanağını İndir
+                  </Button>
+                </Link>
               </div>
 
-              {/* QR Verification Card */}
-              <div className="p-5 rounded-xl border border-slate-200 bg-white space-y-3">
+              <div className="p-4 rounded-xl border border-slate-200 bg-white space-y-2.5">
                 <div className="flex items-center gap-2 font-semibold text-slate-900 text-sm">
-                  <QrCode className="w-4 h-4 text-purple-600" />
+                  <QrCode className="size-4 text-purple-600" />
                   Kamuya Açık QR Doğrulama
                 </div>
                 <p className="text-xs text-slate-500">
                   PII (kişisel veri) içermeyen güvenli doğrulama linki ve QR kodu.
                 </p>
                 <Link href="/verify/demo-token-1">
-                  <Button size="sm" variant="outline" className="w-full gap-2 border-purple-200 text-purple-700 hover:bg-purple-50">
-                    <QrCode className="w-3.5 h-3.5" /> Doğrulama Sayfasını Aç
+                  <Button size="sm" variant="outline" className="w-full gap-2 h-8 text-xs">
+                    <QrCode className="size-3.5" /> Doğrulama Sayfasını Aç
                   </Button>
                 </Link>
               </div>
@@ -499,23 +490,25 @@ export default function HandoverWizardPage() {
       <div className="flex items-center justify-between pt-4 border-t border-slate-200">
         <Button
           variant="outline"
+          size="sm"
           disabled={currentStep === 1}
           onClick={() => setCurrentStep((prev) => Math.max(1, prev - 1))}
-          className="gap-2"
+          className="gap-1.5 h-9 text-xs"
         >
-          <ArrowLeft className="w-4 h-4" /> Önceki Adım
+          <ArrowLeft className="size-3.5" /> Önceki Adım
         </Button>
 
         {currentStep < totalSteps ? (
           <Button
+            size="sm"
             onClick={() => setCurrentStep((prev) => Math.min(totalSteps, prev + 1))}
-            className="bg-blue-600 hover:bg-blue-700 gap-2"
+            className="bg-slate-900 hover:bg-slate-800 text-white gap-1.5 h-9 text-xs"
           >
-            Sonraki Adım <ArrowRight className="w-4 h-4" />
+            Sonraki Adım <ArrowRight className="size-3.5" />
           </Button>
         ) : (
           <Link href="/dashboard">
-            <Button className="bg-emerald-600 hover:bg-emerald-700">
+            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white h-9 text-xs">
               Teslimatı Bitir ve Paneline Dön
             </Button>
           </Link>
