@@ -30,6 +30,7 @@ export default function DashboardPageClient() {
   const [showVerifiedBanner, setShowVerifiedBanner] = useState(isVerified)
 
   const [user, setUser] = useState<any>(null)
+  const [authLoading, setAuthLoading] = useState(true)
   const supabase = createClient()
 
   useEffect(() => {
@@ -45,6 +46,8 @@ export default function DashboardPageClient() {
         setUser(user)
       } catch {
         setUser(null)
+      } finally {
+        setAuthLoading(false)
       }
     }
     checkAuth()
@@ -222,7 +225,30 @@ export default function DashboardPageClient() {
         </div>
       )}
 
-      {/* Demo / Örnek Görünüm Bilgilendirme Bannerı */}
+      {/* Auth yüklenirken skeleton göster */}
+      {authLoading ? (
+        <div className="flex flex-col gap-6 animate-pulse">
+          <div className="h-14 bg-[#f7f7f7] rounded-xl border border-[#ebebeb]" />
+          <div className="flex items-center justify-between gap-4 pb-2 border-b border-[#dddddd]">
+            <div className="space-y-2 flex-1">
+              <div className="h-6 w-72 bg-[#f0f0f0] rounded-lg" />
+              <div className="h-4 w-96 bg-[#f7f7f7] rounded-lg" />
+            </div>
+            <div className="flex gap-2">
+              <div className="h-9 w-28 bg-[#f0f0f0] rounded-lg" />
+              <div className="h-9 w-36 bg-[#f7f7f7] rounded-lg" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[1,2,3,4].map(i => (
+              <div key={i} className="h-24 bg-[#f7f7f7] rounded-[14px] border border-[#ebebeb]" />
+            ))}
+          </div>
+          <div className="h-64 bg-[#f7f7f7] rounded-[14px] border border-[#ebebeb]" />
+        </div>
+      ) : (
+      <>
+      {/* Demo / Örnek Görünüm Bilgilendirme Bannerı — sadece auth kontrolü tamamlanıp kullanıcı yoksa */}
       {!user && (
         <div className="bg-[#fff8f6] border border-[#ffd1da] rounded-xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div className="flex items-start sm:items-center gap-2.5">
@@ -566,6 +592,8 @@ export default function DashboardPageClient() {
             </Table>
           </Card>
         </>
+      )}
+      </>
       )}
     </div>
   )

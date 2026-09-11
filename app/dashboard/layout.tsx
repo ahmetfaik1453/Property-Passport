@@ -72,7 +72,15 @@ export default function DashboardLayout({
 
         {/* User / Agency Switcher / Info */}
         <div className="p-4 border-b border-[#ebebeb]">
-          {user ? (() => {
+          {loading ? (
+            <div className="bg-[#f7f7f7] rounded-xl p-3 flex items-center gap-3 border border-[#ebebeb] animate-pulse">
+              <div className="size-9 rounded-lg bg-[#ebebeb] shrink-0" />
+              <div className="flex-1 space-y-1.5">
+                <div className="h-3 w-24 bg-[#e0e0e0] rounded" />
+                <div className="h-2.5 w-16 bg-[#ebebeb] rounded" />
+              </div>
+            </div>
+          ) : user ? (() => {
             const meta = user.user_metadata || {}
             const displayName = meta.full_name || user.email?.split('@')[0] || 'Kullanıcı'
             const role = meta.role === 'LANDLORD' ? 'Mülk Sahibi' : meta.role === 'TENANT' ? 'Kiracı' : 'Acente Yöneticisi'
