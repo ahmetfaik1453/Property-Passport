@@ -68,19 +68,39 @@ export default function DashboardLayout({
           <Logo className="h-11 w-auto" height={44} width={200} priority />
         </Link>
 
-        {/* Agency Switcher / Info */}
+        {/* User / Agency Switcher / Info */}
         <div className="p-4 border-b border-[#ebebeb]">
-          {user ? (
-            <div className="bg-[#f7f7f7] rounded-xl p-3 flex items-center gap-3 border border-[#ebebeb]">
-              <div className="size-8 rounded-lg bg-[#ff385c]/10 text-[#ff385c] flex items-center justify-center font-bold text-xs">
-                PG
+          {user ? (() => {
+            const meta = user.user_metadata || {}
+            const displayName = meta.full_name || user.email?.split('@')[0] || 'Kullanıcı'
+            const role = meta.role === 'LANDLORD' ? 'Mülk Sahibi' : meta.role === 'TENANT' ? 'Kiracı' : 'Acente Yöneticisi'
+            const subTitle = meta.role === 'AGENT' && meta.agency_name ? meta.agency_name : user.email
+            const initials = displayName
+              .split(' ')
+              .map((n: string) => n[0])
+              .join('')
+              .toUpperCase()
+              .slice(0, 2) || 'PP'
+
+            return (
+              <div className="bg-[#f7f7f7] rounded-xl p-3 flex items-center gap-3 border border-[#ebebeb]">
+                <div className="size-9 rounded-lg bg-[#ff385c]/10 text-[#ff385c] flex items-center justify-center font-bold text-xs shrink-0">
+                  {initials}
+                </div>
+                <div className="overflow-hidden min-w-0">
+                  <p className="text-xs font-semibold text-[#222222] truncate" title={displayName}>
+                    {displayName}
+                  </p>
+                  <p className="text-[10px] text-[#ff385c] font-medium truncate">
+                    {role}
+                  </p>
+                  <p className="text-[10px] text-[#6a6a6a] truncate" title={subTitle}>
+                    {subTitle}
+                  </p>
+                </div>
               </div>
-              <div className="overflow-hidden">
-                <p className="text-xs font-semibold text-[#222222] truncate">Prestij Gayrimenkul</p>
-                <p className="text-[10px] text-[#6a6a6a] truncate">Acente Yöneticisi</p>
-              </div>
-            </div>
-          ) : (
+            )
+          })() : (
             <div className="bg-[#fff8f6] rounded-xl p-3 border border-[#ffd1da]">
               <div className="flex items-center gap-2 mb-1.5">
                 <span className="size-2 rounded-full bg-[#ff385c] animate-pulse" />

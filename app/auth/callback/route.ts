@@ -15,7 +15,7 @@ export async function GET(request: Request) {
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`)
+      return NextResponse.redirect(`${origin}${next}?verified=true`)
     }
     console.error('exchangeCodeForSession error:', error)
   }
@@ -26,7 +26,7 @@ export async function GET(request: Request) {
       type: type as any,
     })
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`)
+      return NextResponse.redirect(`${origin}${next}?verified=true`)
     }
     console.error('verifyOtp error:', error)
   }
@@ -34,7 +34,7 @@ export async function GET(request: Request) {
   // If verification succeeded via cookies/session already active
   const { data: { session } } = await supabase.auth.getSession()
   if (session) {
-    return NextResponse.redirect(`${origin}${next}`)
+    return NextResponse.redirect(`${origin}${next}?verified=true`)
   }
 
   // If verification failed or no code/token was provided

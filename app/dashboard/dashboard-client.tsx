@@ -13,7 +13,8 @@ import {
   MapPin, 
   Camera,
   Layers,
-  Search
+  Search,
+  X
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
@@ -21,10 +22,21 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { createClient } from '@/utils/supabase/client'
+import { useSearchParams } from 'next/navigation'
 
 export default function DashboardPageClient() {
+  const searchParams = useSearchParams()
+  const isVerified = searchParams.get('verified') === 'true'
+  const [showVerifiedBanner, setShowVerifiedBanner] = useState(isVerified)
+
   const [user, setUser] = useState<any>(null)
   const supabase = createClient()
+
+  useEffect(() => {
+    if (isVerified) {
+      setShowVerifiedBanner(true)
+    }
+  }, [isVerified])
 
   useEffect(() => {
     async function checkAuth() {
@@ -85,6 +97,31 @@ export default function DashboardPageClient() {
 
   return (
     <div className="flex flex-col gap-6">
+      {/* E-posta Onaylandı Başarı Bildirimi */}
+      {showVerifiedBanner && (
+        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-start justify-between gap-3 text-emerald-950 shadow-xs animate-in fade-in duration-200">
+          <div className="flex items-start gap-3">
+            <div className="size-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+              <CheckCircle2 className="size-5" />
+            </div>
+            <div className="space-y-0.5">
+              <p className="font-bold text-sm text-emerald-950">E-posta Adresiniz Başarıyla Onaylandı!</p>
+              <p className="text-xs text-emerald-800 leading-relaxed">
+                Hesabınız ve acente profiliniz aktif hale getirildi. Artık portföyünüze mülk ekleyebilir ve teslim tutanağı düzenleyebilirsiniz.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowVerifiedBanner(false)}
+            className="size-7 rounded-lg hover:bg-emerald-200/50 text-emerald-800 flex items-center justify-center transition-colors"
+            title="Kapat"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+      )}
+
       {/* Demo / Örnek Görünüm Bilgilendirme Bannerı */}
       {!user && (
         <div className="bg-[#fff8f6] border border-[#ffd1da] rounded-xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">

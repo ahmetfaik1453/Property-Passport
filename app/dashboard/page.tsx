@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   },
 }
 
+import React, { Suspense } from 'react'
+
 export default function DashboardPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -30,7 +32,9 @@ export default function DashboardPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <DashboardPageClient />
+      <Suspense fallback={<div className="p-8 text-center text-xs text-slate-500">Yükleniyor...</div>}>
+        <DashboardPageClient />
+      </Suspense>
     </>
   )
 }
