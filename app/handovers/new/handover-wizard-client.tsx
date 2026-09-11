@@ -605,9 +605,18 @@ function WizardInner() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6 flex flex-col gap-6">
-            <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 leading-relaxed">
-              <span className="font-bold block mb-1">Tutanak Başarıyla Arşivlendi</span>
-              Bu teslimat kaydı, sisteme girilen {rooms.length} oda ve {totalPhotosCount} adet görsel kanıt ile birlikte güvenli biçimde mühürlendi.
+            <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 leading-relaxed space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-sm text-emerald-950 flex items-center gap-1.5">
+                  <CheckCircle2 className="size-4 text-emerald-600" /> Tutanak Mühürlendi & Arşivlendi
+                </span>
+                <span className="bg-emerald-200/80 text-emerald-900 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  Kilitli & Değiştirilemez
+                </span>
+              </div>
+              <p className="text-[12px] text-emerald-900 leading-relaxed">
+                Bu teslim tutanağı ve karekodu oluşturulduktan sonra sisteme girilen <strong>{rooms.length} oda</strong> ve <strong>{totalPhotosCount} adet görsel kanıt</strong> değişmez biçimde mühürlenmiştir. <strong>Sonradan fotoğraf eklenemez veya çıkarılamaz.</strong> Böylece her iki taraf için de yasal ihtilaflara karşı tam güvence sağlanır.
+              </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

@@ -109,9 +109,29 @@ export default function DashboardLayout({
         </header>
 
         {/* Content View: max-w-7xl centered with balanced Airbnb padding */}
-        <main className="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-8 py-8 sm:py-10">
+        <main className="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-8 py-6 sm:py-10 pb-20 md:pb-10">
           {children}
         </main>
+
+        {/* Mobile Bottom Navigation Bar (App Experience) */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-md border-t border-[#ebebeb] flex items-center justify-around z-50 px-2 shadow-lg">
+          {navLinks.map((item) => {
+            const Icon = item.icon
+            const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex flex-col items-center justify-center flex-1 py-1 text-[11px] font-medium transition-colors ${
+                  isActive ? 'text-[#ff385c] font-bold' : 'text-[#717171] hover:text-[#222222]'
+                }`}
+              >
+                <Icon className={`size-5 mb-0.5 ${isActive ? 'text-[#ff385c]' : 'text-[#717171]'}`} />
+                <span className="truncate max-w-[72px] text-center">{item.label}</span>
+              </Link>
+            )
+          })}
+        </div>
       </div>
     </div>
   )

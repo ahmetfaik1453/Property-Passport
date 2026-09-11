@@ -239,8 +239,61 @@ export default function ContactsPageClient() {
         </button>
       </div>
 
-      {/* Table Card */}
-      <Card className="border border-[#dddddd] shadow-none bg-white rounded-[14px] overflow-hidden">
+      {/* Mobile Cards (< sm ekranlar) */}
+      <div className="sm:hidden flex flex-col gap-3">
+        {activeTab === 'TENANTS' ? (
+          tenants.map((t) => (
+            <div key={t.id} className="p-4 rounded-xl border border-[#dddddd] bg-white space-y-2.5 shadow-2xs">
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <span className="font-bold text-sm text-[#222222] block">{t.name}</span>
+                  <span className="text-xs text-[#717171]">{t.property}</span>
+                </div>
+                <Badge variant="outline" className="bg-emerald-50 text-emerald-800 border-emerald-200 text-[10px] font-semibold rounded-full shrink-0">
+                  {t.status}
+                </Badge>
+              </div>
+              <div className="flex flex-col gap-1 text-xs pt-1 border-t border-[#f0f0f0] text-[#717171]">
+                <div className="flex justify-between">
+                  <span>Telefon:</span>
+                  <span className="font-mono text-[#222222] font-medium">{t.phone}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>E-posta:</span>
+                  <span className="text-[#222222]">{t.email}</span>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          landlords.map((l) => (
+            <div key={l.id} className="p-4 rounded-xl border border-[#dddddd] bg-white space-y-2.5 shadow-2xs">
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <span className="font-bold text-sm text-[#222222] block">{l.name}</span>
+                  <span className="text-xs text-[#717171]">{l.property}</span>
+                </div>
+                <Badge variant="secondary" className="text-[10px] font-semibold rounded-full px-2 py-0.5 bg-[#f7f7f7] text-[#222222] border border-[#dddddd] shrink-0">
+                  {l.totalProperties} Mülk
+                </Badge>
+              </div>
+              <div className="flex flex-col gap-1 text-xs pt-1 border-t border-[#f0f0f0] text-[#717171]">
+                <div className="flex justify-between">
+                  <span>Telefon:</span>
+                  <span className="font-mono text-[#222222] font-medium">{l.phone}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>E-posta:</span>
+                  <span className="text-[#222222]">{l.email}</span>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop Table Card (sm ve üzeri) */}
+      <Card className="hidden sm:block border border-[#dddddd] shadow-none bg-white rounded-[14px] overflow-hidden">
         <Table>
           <TableHeader className="bg-[#f7f7f7]">
             <TableRow className="border-b border-[#dddddd] hover:bg-transparent">

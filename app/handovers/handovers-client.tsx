@@ -162,8 +162,68 @@ export default function HandoversPageClient() {
         </div>
       </div>
 
-      {/* Table Card */}
-      <Card className="border border-[#dddddd] shadow-none bg-white rounded-[14px] overflow-hidden">
+      {/* Mobile Card List (< sm ekranlar) */}
+      <div className="sm:hidden flex flex-col gap-3">
+        {filtered.map((item) => (
+          <div key={item.id} className="p-4 rounded-xl border border-[#dddddd] bg-white space-y-3 shadow-2xs">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <span className="font-semibold text-sm text-[#222222] block">{item.title}</span>
+                <span className="text-xs text-[#717171] flex items-center gap-1 mt-0.5">
+                  <MapPin className="size-3 text-[#ff385c]" /> {item.district}
+                </span>
+              </div>
+              {item.status === 'COMPLETED' ? (
+                <Badge variant="outline" className="text-[10px] font-semibold rounded-full border-emerald-200 text-emerald-800 bg-emerald-50 shrink-0">
+                  Tamamlandı
+                </Badge>
+              ) : item.status === 'PENDING' ? (
+                <Badge variant="outline" className="text-[10px] font-semibold rounded-full border-[#ffd1da] text-[#c13515] bg-[#fff8f6] shrink-0">
+                  Onay Bekliyor
+                </Badge>
+              ) : (
+                <Badge variant="outline" className="text-[10px] font-semibold rounded-full border-[#dddddd] text-[#717171] bg-[#f7f7f7] shrink-0">
+                  Taslak
+                </Badge>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-xs py-2 border-y border-[#f0f0f0] text-[#717171]">
+              <div>
+                <span className="block text-[10px] uppercase text-[#a0a0a0]">Tür / Tarih</span>
+                <span className="text-[#222222] font-medium">{item.type}</span> &bull; {item.date}
+              </div>
+              <div>
+                <span className="block text-[10px] uppercase text-[#a0a0a0]">Kanıt</span>
+                <span className="inline-flex items-center gap-1 text-[#222222] font-medium">
+                  <Camera className="size-3 text-[#717171]" /> {item.photos} Görsel
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between gap-2 pt-1">
+              <div className="text-[11px] text-[#717171] truncate max-w-[150px]">
+                K: {item.tenant}
+              </div>
+              <div className="flex items-center gap-2">
+                <a href={`/api/handovers/${item.id}/pdf`} download={`tutanak-${item.id}.pdf`}>
+                  <Button size="sm" variant="ghost" className="h-8 px-2.5 text-xs font-semibold rounded-lg text-[#222222] hover:bg-[#f7f7f7] gap-1">
+                    <Download className="size-3 text-[#717171]" /> PDF
+                  </Button>
+                </a>
+                <Link href={`/verify/${item.token}`}>
+                  <Button size="sm" variant="outline" className="h-8 px-2.5 text-xs font-semibold rounded-lg gap-1 border-[#dddddd] text-[#222222] hover:bg-[#f7f7f7]">
+                    QR <ArrowUpRight className="size-3 text-[#717171]" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop Table (sm ve üzeri ekranlar) */}
+      <Card className="hidden sm:block border border-[#dddddd] shadow-none bg-white rounded-[14px] overflow-hidden">
         <Table>
           <TableHeader className="bg-[#f7f7f7]">
             <TableRow className="border-b border-[#dddddd] hover:bg-transparent">

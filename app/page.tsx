@@ -81,7 +81,7 @@ export default function HomePage() {
             <Logo className="h-12 sm:h-14 w-auto" height={52} width={240} priority />
           </Link>
 
-          {/* Navigation Tabs (Airbnb style) */}
+          {/* Navigation Tabs (Airbnb style - Desktop) */}
           <nav className="hidden md:flex items-center gap-8 text-[15px] font-medium text-[#222222]">
             <Link href="/properties" className="pb-1 border-b-2 border-[#222222] text-[#222222] font-semibold">
               Taşınmazlar
@@ -94,22 +94,38 @@ export default function HomePage() {
             </Link>
           </nav>
 
-          {/* Right Utilities */}
-          <div className="flex items-center gap-3">
-            <Link href="/dashboard" className="hidden sm:inline-block text-xs font-semibold text-[#222222] hover:bg-[#f7f7f7] px-3.5 py-2.5 rounded-full transition-colors">
+          {/* Right Utilities (Desktop + Mobile responsive) */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link href="/dashboard" className="hidden sm:inline-block text-xs font-semibold text-[#222222] hover:bg-[#f7f7f7] px-3.5 py-2 rounded-full transition-colors">
               Yönetim Paneli
             </Link>
             <Link href="/login">
-              <button className="text-xs font-medium text-[#222222] px-3 py-2 rounded-lg hover:bg-[#f7f7f7] transition-colors">
+              <button className="text-xs font-medium text-[#222222] px-2.5 sm:px-3 py-2 rounded-lg hover:bg-[#f7f7f7] transition-colors border border-transparent hover:border-[#ebebeb]">
                 Giriş Yap
               </button>
             </Link>
             <Link href="/register">
-              <button className="bg-[#ff385c] hover:bg-[#e00b41] text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-xs">
-                Acente Olun
+              <button className="bg-[#ff385c] hover:bg-[#e00b41] text-white text-xs font-semibold px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg transition-colors shadow-xs">
+                Acente Ol
               </button>
             </Link>
           </div>
+        </div>
+
+        {/* Mobile Horizontal Quick Links (Giriş & Navigasyon kolaylığı) */}
+        <div className="md:hidden flex items-center justify-around border-t border-[#ebebeb] px-2 py-2 bg-white text-[12px] font-medium text-[#717171]">
+          <Link href="/properties" className="px-2 py-1 text-[#222222] hover:text-[#ff385c]">
+            Taşınmazlar
+          </Link>
+          <Link href="/handovers" className="px-2 py-1 text-[#222222] hover:text-[#ff385c]">
+            Tutanaklar
+          </Link>
+          <Link href="/contacts" className="px-2 py-1 text-[#222222] hover:text-[#ff385c]">
+            Kişiler
+          </Link>
+          <Link href="/dashboard" className="px-2 py-1 text-[#ff385c] font-semibold">
+            Panel &rarr;
+          </Link>
         </div>
       </header>
 
