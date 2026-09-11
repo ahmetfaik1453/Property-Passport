@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  /* Vercel otomatik optimizasyonu */
 };
 
 export default nextConfig;
