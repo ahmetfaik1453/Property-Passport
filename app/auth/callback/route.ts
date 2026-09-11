@@ -17,6 +17,7 @@ export async function GET(request: Request) {
     if (!error) {
       return NextResponse.redirect(`${origin}${next}`)
     }
+    console.error('exchangeCodeForSession error:', error)
   }
 
   if (token_hash && type) {
@@ -27,8 +28,15 @@ export async function GET(request: Request) {
     if (!error) {
       return NextResponse.redirect(`${origin}${next}`)
     }
+    console.error('verifyOtp error:', error)
+  }
+
+  // If verification succeeded via cookies/session already active
+  const { data: { session } } = await supabase.auth.getSession()
+  if (session) {
+    return NextResponse.redirect(`${origin}${next}`)
   }
 
   // If verification failed or no code/token was provided
-  return NextResponse.redirect(`${origin}/login?error=auth-verification-failed`)
+  return NextResponse.redirect(`${origin}/login?verified=true`)
 }

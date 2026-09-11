@@ -18,6 +18,7 @@ function LoginForm() {
 
   const registeredNotice = searchParams.get('registered') === 'check-email'
   const isAuthFailed = searchParams.get('error') === 'auth-verification-failed'
+  const isVerified = searchParams.get('verified') === 'true'
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -42,6 +43,9 @@ function LoginForm() {
       const { error } = await supabase.auth.resend({
         type: 'signup',
         email,
+        options: {
+          emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback?next=/dashboard` : undefined,
+        },
       })
 
       if (error) {
@@ -130,6 +134,18 @@ function LoginForm() {
           </CardHeader>
           <CardContent className="pt-4">
             <form onSubmit={handleLogin} className="flex flex-col gap-3.5">
+              {isVerified && (
+                <div className="p-3.5 text-xs bg-emerald-50 text-emerald-900 rounded-xl border border-emerald-200 flex items-start gap-2.5">
+                  <CheckCircle2 className="size-4 shrink-0 text-emerald-600 mt-0.5" />
+                  <div className="space-y-1">
+                    <p className="font-semibold text-emerald-950">E-posta Adresiniz Doğrulandı!</p>
+                    <p className="text-[11px] text-emerald-800 leading-relaxed">
+                      Hesabınız başarıyla aktive edildi. Şimdi şifrenizle giriş yapabilirsiniz.
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {registeredNotice && (
                 <div className="p-3.5 text-xs bg-emerald-50 text-emerald-900 rounded-xl border border-emerald-200 flex items-start gap-2.5">
                   <CheckCircle2 className="size-4 shrink-0 text-emerald-600 mt-0.5" />

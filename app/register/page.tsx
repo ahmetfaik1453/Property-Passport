@@ -74,6 +74,7 @@ export default function RegisterPage() {
         email,
         password,
         options: {
+          emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback?next=/dashboard` : undefined,
           data: {
             full_name: fullName,
             agency_name: agencyName,
